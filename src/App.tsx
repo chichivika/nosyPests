@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import MouseWrapper from './mouse/MouseWrapper';
+import AnimationElement from './registrar/AnimationElement';
+import AnimationRegistrar from './registrar/AnimationRegistrar';
 
 const StyledCnt = styled.div`
     display: flex;
@@ -26,6 +27,7 @@ function App() {
     return (
         <div className='app'>
             <header className='app-header'>Nosy Pests</header>
+            <AnimationElement />
             <StyledRowCnt>
                 <StyledCnt>
                     <StyledRowCnt>
@@ -39,43 +41,29 @@ function App() {
                 </StyledCnt>
                 <StyledCnt>
                     <StyledRowCnt>
-                        <MouseWrapper height={15}>
-                            <div
-                                style={{ backgroundColor: 'grey', width: '50px', height: '50px' }}
-                            />
-                        </MouseWrapper>
-                        <MouseWrapper height={20}>
-                            <div
-                                style={{ backgroundColor: 'blue', width: '50px', height: '50px' }}
-                            />
-                        </MouseWrapper>
-                        <MouseWrapper height={30}>
+                        <div style={{ backgroundColor: 'grey', width: '50px', height: '50px' }} />
+                        <div style={{ backgroundColor: 'blue', width: '50px', height: '50px' }} />
+                        <AnimationRegistrar animationHeight={20}>
                             <div
                                 style={{ backgroundColor: 'pink', width: '50px', height: '50px' }}
                             />
-                        </MouseWrapper>
-                        <MouseWrapper height={40}>
+                        </AnimationRegistrar>
+                        <AnimationRegistrar animationHeight={30} animationDirection='right'>
                             <div
                                 style={{ backgroundColor: 'orange', width: '50px', height: '50px' }}
                             />
-                        </MouseWrapper>
-                        <MouseWrapper height={50} turnedLeft={false}>
-                            <div
-                                style={{ backgroundColor: 'green', width: '50px', height: '50px' }}
-                            />
-                        </MouseWrapper>
+                        </AnimationRegistrar>
+                        <div style={{ backgroundColor: 'green', width: '50px', height: '50px' }} />
                     </StyledRowCnt>
-                    <MouseWrapper>
-                        <MouseWrapper bottom={0} height={300}>
-                            <div
-                                style={{
-                                    border: '1px solid grey',
-                                    width: '300px',
-                                    height: '300px',
-                                }}
-                            />
-                        </MouseWrapper>
-                    </MouseWrapper>
+                    <AnimationRegistrar animationHeight={100} animationBottom={50}>
+                        <div
+                            style={{
+                                border: '1px solid grey',
+                                width: '300px',
+                                height: '300px',
+                            }}
+                        />
+                    </AnimationRegistrar>
                 </StyledCnt>
             </StyledRowCnt>
         </div>

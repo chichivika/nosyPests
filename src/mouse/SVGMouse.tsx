@@ -4,8 +4,13 @@ import { PathData, Mouse } from './mouseUtils';
 export type MouseProps = {
     height?: number;
     turnedLeft?: boolean;
+    translateDuration?: number;
 };
-export default function SVGMouse({ height = 200, turnedLeft = true }: MouseProps) {
+export default function SVGMouse({
+    height = 200,
+    turnedLeft = true,
+    translateDuration = 5,
+}: MouseProps) {
     const mouseObject = useMemo(() => {
         return new Mouse({ height });
     }, [height]);
@@ -21,8 +26,8 @@ export default function SVGMouse({ height = 200, turnedLeft = true }: MouseProps
                     attributeType='XML'
                     type='translate'
                     values={`${repetedPause}${repetedMouse}${repetedPause}`}
-                    dur={`${Math.min(width / 5, 10)}s`}
-                    repeatCount='indefinite'
+                    dur={`${translateDuration}s`}
+                    repeatCount='1'
                 />
                 {renderHead(mouseObject)}
                 {renderEye(mouseObject)}
