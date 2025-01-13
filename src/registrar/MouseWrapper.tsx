@@ -10,6 +10,7 @@ type Props = MouseProps & {
     bottom?: number;
     animationPause?: number;
     animationDuration?: number;
+    animationDelay?: number;
     disabled?: boolean;
 };
 const StyledMouseWrapper = styled.div`
@@ -56,13 +57,14 @@ const StyledMovedMouseCnt = styled.div<{
     $width: number;
     $isTurnedLeft: boolean;
     $animationDuration: number;
+    $animationDelay: number;
 }>(
     (props) => css`
         position: relative;
         left: ${props.$isTurnedLeft ? `${props.$width}px` : undefined};
         right: ${props.$isTurnedLeft ? undefined : `${props.$width}px`};
         animation: ${getAnimationRule(props.$width, props.$isTurnedLeft, props.$animationDuration)};
-        animation-iteration-delay: 5s;
+        animation-delay: ${props.$animationDelay}s;
     `,
 );
 export default function MouseWrapper({
@@ -70,6 +72,7 @@ export default function MouseWrapper({
     bottom = 0,
     animationPause = 20,
     animationDuration = 6,
+    animationDelay = 0,
     disabled = false,
     ...mouseProps
 }: Props) {
@@ -119,6 +122,7 @@ export default function MouseWrapper({
                         $width={width}
                         $isTurnedLeft={isTurnedLeft}
                         $animationDuration={animationDuration}
+                        $animationDelay={animationDelay}
                         onAnimationEnd={() => {
                             setShowMouse(false);
                         }}

@@ -69,7 +69,31 @@ function App() {
                             />
                         </MouseWrapper>
                     </StyledRowCnt>
-                    <div style={{ border: '1px solid grey', width: '200px', height: '200px' }} />
+                    <MouseWrapper animationPause={5} height={15} bottom={175} animationDelay={1.5}>
+                        <MouseWrapper
+                            animationPause={5}
+                            height={25}
+                            bottom={150}
+                            animationDelay={1}
+                        >
+                            <MouseWrapper
+                                animationPause={5}
+                                height={50}
+                                bottom={100}
+                                animationDelay={0.5}
+                            >
+                                <MouseWrapper animationPause={5} height={100}>
+                                    <div
+                                        style={{
+                                            border: '1px solid grey',
+                                            width: '200px',
+                                            height: '200px',
+                                        }}
+                                    />
+                                </MouseWrapper>
+                            </MouseWrapper>
+                        </MouseWrapper>
+                    </MouseWrapper>
                 </StyledCnt>
                 <StyledCnt>
                     <StyledRowCnt>
