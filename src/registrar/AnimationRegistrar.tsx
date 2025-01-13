@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, ReactElement } from 'react';
-import { registerNodeAnimation, UserAnimationSettings } from './registrarUtils';
+import { registerNodeAnimation, UserAnimationSettings } from './registrar';
 
 type Props = UserAnimationSettings & {
     children: ReactElement;

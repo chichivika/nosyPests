@@ -1,47 +1,35 @@
 import React, { useMemo } from 'react';
-import { PathData, Mouse } from './mouseUtils';
+import { Mouse } from './classMouse';
+import { Point } from '../utils/drawUtils';
+import { MouseProps, defaultMouseProps } from './mouseUtils';
 
-export type MouseProps = {
-    height?: number;
-    turnedLeft?: boolean;
-    translateDuration?: number;
-};
-export default function SVGMouse({
-    height = 200,
-    turnedLeft = true,
-    translateDuration = 5,
-}: MouseProps) {
+const NOSE_ANIMATION_TIMES = 2;
+const NOSE_ANIMATION_PAUSE_STATE_TIMES = 10;
+const NOSE_ANIMATION_DURATION = '2s';
+const NOSE_ANIMATION_REPEAT_COUNT = 'indefinite';
+
+export default function SVGMouse(props: MouseProps) {
+    const { height, animationDirection, useNoseAnimation } = { ...defaultMouseProps, ...props };
     const mouseObject = useMemo(() => {
         return new Mouse({ height });
     }, [height]);
-    const width = mouseObject.getWidth();
 
-    const repetedPause = `${width} 0;`.repeat(2);
-    const repetedMouse = '0 0;'.repeat(5);
+    const width = mouseObject.getWidth();
+    const transform = animationDirection === 'left' ? '' : 'scale(-1, 1)';
+
     return (
-        <svg width={width} height={height} style={{ transform: turnedLeft ? '' : 'scale(-1, 1)' }}>
-            <g>
-                <animateTransform
-                    attributeName='transform'
-                    attributeType='XML'
-                    type='translate'
-                    values={`${repetedPause}${repetedMouse}${repetedPause}`}
-                    dur={`${translateDuration}s`}
-                    repeatCount='1'
-                />
-                {renderHead(mouseObject)}
-                {renderEye(mouseObject)}
-                {renderEar(mouseObject)}
-                {renderWhiskers(mouseObject)}
-                {renderNose(mouseObject)}
-            </g>
+        <svg width={width} height={height} style={{ transform }}>
+            {renderHead(mouseObject)}
+            {renderEye(mouseObject)}
+            {renderEar(mouseObject)}
+            {renderWhiskers(mouseObject, useNoseAnimation)}
+            {renderNose(mouseObject, useNoseAnimation)}
         </svg>
     );
 }
 
 function renderHead(mouseObject: Mouse) {
-    const headPathData = mouseObject.getHeadPathSegments();
-    const headPath = getFigurePath(headPathData);
+    const headPath = mouseObject.getHeadPathSVG();
     return <path d={headPath} fill='lightGrey' stroke='grey' />;
 }
 
@@ -68,19 +56,15 @@ function renderEye(mouseObject: Mouse) {
     );
 }
 
-function renderWhiskers(mouseObject: Mouse) {
-    const { startPoint, nextPoint, radius, largeArcFlag, sweepFlag } =
-        mouseObject.getWhiskersAreaData();
-    const path = `M${startPoint[0]} ${startPoint[1]} A ${radius} ${radius} 
-    0 ${largeArcFlag} ${sweepFlag} ${nextPoint[0]} ${nextPoint[1]}`;
-
+function renderWhiskers(mouseObject: Mouse, useNoseAnimation: boolean) {
+    const areaPath = mouseObject.getWhiskersAreaPathSVG();
     const whiskers = mouseObject.getWhiskersData();
+
     return (
         <g>
-            <path d={path} stroke='grey' fill='none' />
+            <path d={areaPath} stroke='grey' fill='none' />
             {whiskers.map((whiskerLine) => {
                 const [firstVert, secondVert] = whiskerLine;
-                const repeatedPauseValue = `0 ${firstVert[0]} ${firstVert[1]};`.repeat(10);
                 return (
                     <line
                         x1={firstVert[0]}
@@ -91,16 +75,7 @@ function renderWhiskers(mouseObject: Mouse) {
                         fill='none'
                         strokeOpacity={0.5}
                     >
-                        <animateTransform
-                            attributeName='transform'
-                            attributeType='XML'
-                            type='rotate'
-                            values={`${repeatedPauseValue}
-                            10 ${firstVert[0]} ${firstVert[1]};0 ${firstVert[0]} ${firstVert[1]};
-                            10 ${firstVert[0]} ${firstVert[1]};0 ${firstVert[0]} ${firstVert[1]}`}
-                            dur='2s'
-                            repeatCount='indefinite'
-                        />
+                        {useNoseAnimation && renderWhiskerAnimation(firstVert)}
                     </line>
                 );
             })}
@@ -109,18 +84,15 @@ function renderWhiskers(mouseObject: Mouse) {
 }
 
 function renderEar(mouseObject: Mouse) {
-    const pathData = mouseObject.getEarData();
-
-    const pathString = getFigurePath(pathData);
+    const pathString = mouseObject.getEarPathSVG();
     return <path d={pathString} fill='pink' stroke='grey' />;
 }
 
-function renderNose(mouseObject: Mouse) {
+function renderNose(mouseObject: Mouse, useNoseAnimation: boolean) {
     const { centerPoint, radiusX, radiusY, rotateAngle } = mouseObject.getNoseData();
     const [cx, cy] = centerPoint;
-    const rotate = `rotate(${(rotateAngle * 180) / Math.PI} ${cx} ${cy})`;
 
-    const repeatedRadiusValue = `${radiusX};`.repeat(10);
+    const rotate = `rotate(${(rotateAngle * 180) / Math.PI} ${cx} ${cy})`;
     return (
         <ellipse
             cx={cx}
@@ -131,41 +103,39 @@ function renderNose(mouseObject: Mouse) {
             fill='pink'
             transform={rotate}
         >
-            <animate
-                attributeName='rx'
-                values={`${repeatedRadiusValue}${(radiusX * 2) / 3};${radiusX};
-                ${(radiusX * 2) / 3};${radiusX}`}
-                dur='2s'
-                repeatCount='indefinite'
-            />
+            {useNoseAnimation && renderNoseAnimation(radiusX)}
         </ellipse>
     );
 }
 
-function getFigurePath(pathData: PathData) {
-    const { startPoint, pathSegments } = pathData;
-    let pathString = `M${startPoint[0]} ${startPoint[1]}`;
+function renderNoseAnimation(radiusX: number) {
+    const pauseValue = `${radiusX};`.repeat(NOSE_ANIMATION_PAUSE_STATE_TIMES);
+    const oneCycle = `${(radiusX * 2) / 3};${radiusX};`;
+    const allCycles = oneCycle.repeat(NOSE_ANIMATION_TIMES);
+    return (
+        <animate
+            attributeName='rx'
+            values={`${pauseValue}${allCycles}`}
+            dur={NOSE_ANIMATION_DURATION}
+            repeatCount={NOSE_ANIMATION_REPEAT_COUNT}
+        />
+    );
+}
 
-    pathSegments.forEach((segmentData) => {
-        switch (segmentData.type) {
-            case 'linesChain':
-                segmentData.verts.forEach((vert) => {
-                    pathString = `${pathString} L ${vert[0]} ${vert[1]}`;
-                });
-                break;
-            case 'quadratic':
-                pathString = `${pathString} Q 
-                ${segmentData.controlPoint[0]} ${segmentData.controlPoint[1]}
-                ${segmentData.nextPoint[0]} ${segmentData.nextPoint[1]}`;
-                break;
-            case 'circleArc':
-                pathString = `${pathString} A ${segmentData.radius} ${segmentData.radius} 0 
-                ${segmentData.largeArcFlag} ${segmentData.sweepFlag}
-                ${segmentData.nextPoint[0]} ${segmentData.nextPoint[1]}`;
-                break;
-            default:
-                break;
-        }
-    });
-    return pathString;
+function renderWhiskerAnimation(firstVert: Point) {
+    const pauseValue = `0 ${firstVert[0]} ${firstVert[1]};`.repeat(
+        NOSE_ANIMATION_PAUSE_STATE_TIMES,
+    );
+    const oneCycle = `10 ${firstVert[0]} ${firstVert[1]};0 ${firstVert[0]} ${firstVert[1]};`;
+    const allCycles = oneCycle.repeat(NOSE_ANIMATION_TIMES);
+    return (
+        <animateTransform
+            attributeName='transform'
+            attributeType='XML'
+            type='rotate'
+            values={`${pauseValue}${allCycles}`}
+            dur={NOSE_ANIMATION_DURATION}
+            repeatCount={NOSE_ANIMATION_REPEAT_COUNT}
+        />
+    );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getRandomAnimationObject, AnimationSettings } from './registrarUtils';
+import { getRandomAnimationObject, AnimationSettings } from './registrar';
 import SVGMouse from '../mouse/SVGMouse';
-import { Mouse } from '../mouse/mouseUtils';
+import { Mouse } from '../mouse/classMouse';
 
 type Props = {
     animationPeriodicity?: number;
@@ -43,10 +43,17 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         };
 
         timerId = setTimeout(doAnimation, animationInterval);
+
+        function onResize() {
+            clearInterval(timerId);
+        }
+        window.addEventListener('resize', onResize);
+
         return () => {
             if (timerId) {
                 clearInterval(timerId);
             }
+            window.addEventListener('resize', onResize);
         };
     }, [animationPeriodicity, disabled]);
 
@@ -58,20 +65,28 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         return null;
     }
 
-    const isTurnedLeft = animationSettings.animationDirection === 'left';
-    const height = animationSettings.animationHeight;
+    const { animationDirection, animationHeight } = animationSettings;
+    const isTurnedLeft = animationDirection === 'left';
+    const height = animationHeight;
     const width = Mouse.getWidthByHeight(height);
     return (
         <div
             style={{
                 position: 'absolute',
-                left: isTurnedLeft ? `${domElPosition.left - width}px` : `${domElPosition.right}px`,
-                top: `${domElPosition.bottom - height - animationSettings.animationBottom}px`,
+                left: isTurnedLeft
+                    ? `${domElPosition.left - width + window.scrollX}px`
+                    : `${domElPosition.right + window.scrollX}px`,
+                top: `${
+                    domElPosition.bottom -
+                    height -
+                    animationSettings.animationBottom +
+                    window.scrollY
+                }px`,
                 height: `${height}px`,
                 width: `${width}px`,
             }}
         >
-            <SVGMouse turnedLeft={isTurnedLeft} height={height} translateDuration={5} />
+            <SVGMouse animationDirection={animationDirection} height={height} />
         </div>
     );
 }

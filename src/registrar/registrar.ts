@@ -1,9 +1,8 @@
+import { ExistedPropsObject } from '../utils/typeUtils';
+
 type AnimationName = 'mouse' | 'roach';
 type AnimationDirection = 'left' | 'right';
 
-type ExistedPropsObject<ObjectType> = {
-    [prop in keyof ObjectType]-?: ObjectType[prop];
-};
 export type UserAnimationSettings = {
     animationName?: AnimationName;
     animationDirection?: AnimationDirection;
