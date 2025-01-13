@@ -9,7 +9,10 @@ const NOSE_ANIMATION_DURATION = '2s';
 const NOSE_ANIMATION_REPEAT_COUNT = 'indefinite';
 
 export default function SVGMouse(props: MouseProps) {
-    const { height, animationDirection, useNoseAnimation } = { ...defaultMouseProps, ...props };
+    const { height, animationDirection, useNoseAnimation, className } = {
+        ...defaultMouseProps,
+        ...props,
+    };
     const mouseObject = useMemo(() => {
         return new Mouse({ height });
     }, [height]);
@@ -18,7 +21,12 @@ export default function SVGMouse(props: MouseProps) {
     const transform = animationDirection === 'left' ? '' : 'scale(-1, 1)';
 
     return (
-        <svg width={width} height={height} style={{ transform }}>
+        <svg
+            width={width}
+            height={height}
+            style={{ transform }}
+            className={`mouse-svg ${className}`}
+        >
             {renderHead(mouseObject)}
             {renderEye(mouseObject)}
             {renderEar(mouseObject)}

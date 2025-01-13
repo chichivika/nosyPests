@@ -41,15 +41,29 @@ function App() {
             <StyledRowCnt>
                 <StyledCnt>
                     <StyledRowCnt>
-                        <MouseWrapper height={15} animationDirection='right'>
+                        <MouseWrapper
+                            height={15}
+                            animationDirection='right'
+                            animationPause={10}
+                            animationDuration={2}
+                        >
                             <div
                                 style={{ backgroundColor: 'grey', width: '15px', height: '15px' }}
                             />
                         </MouseWrapper>
-                        <div style={{ backgroundColor: 'blue', width: '20px', height: '20px' }} />
+                        <MouseWrapper
+                            height={15}
+                            animationDirection='right'
+                            animationPause={5}
+                            animationDuration={4}
+                        >
+                            <div
+                                style={{ backgroundColor: 'blue', width: '20px', height: '20px' }}
+                            />
+                        </MouseWrapper>
                         <div style={{ backgroundColor: 'pink', width: '30px', height: '30px' }} />
                         <div style={{ backgroundColor: 'orange', width: '40px', height: '40px' }} />
-                        <MouseWrapper>
+                        <MouseWrapper animationPause={30}>
                             <div
                                 style={{ backgroundColor: 'green', width: '50px', height: '50px' }}
                             />
