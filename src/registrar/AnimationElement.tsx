@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getRandomAnimationObject, AnimationSettings } from './registrar';
+import ReactDOM from 'react-dom';
+import { pestsRegistrar, AnimationSettings } from './registrar';
 import SVGMouse from '../mouse/SVGMouse';
 import { Mouse } from '../mouse/classMouse';
 
@@ -25,7 +26,7 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
             if (disabled) {
                 return;
             }
-            const registeredObject = getRandomAnimationObject();
+            const registeredObject = pestsRegistrar.getRandomAnimationObject();
             if (registeredObject === null) {
                 return;
             }
@@ -57,6 +58,8 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         };
     }, [animationPeriodicity, disabled]);
 
+    const pestsNode = pestsRegistrar.pestsDomContainer;
+
     if (disabled || animationSettings === null || domElPosition === null) {
         return null;
     }
@@ -69,7 +72,8 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
     const isTurnedLeft = animationDirection === 'left';
     const height = animationHeight;
     const width = Mouse.getWidthByHeight(height);
-    return (
+
+    return ReactDOM.createPortal(
         <div
             style={{
                 position: 'absolute',
@@ -87,6 +91,7 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
             }}
         >
             <SVGMouse animationDirection={animationDirection} height={height} />
-        </div>
+        </div>,
+        pestsNode,
     );
 }

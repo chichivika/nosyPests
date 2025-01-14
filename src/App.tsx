@@ -28,16 +28,8 @@ function App() {
     return (
         <div className='app'>
             <header className='app-header'>Nosy Pests</header>
-            <div
-                style={{
-                    backgroundColor: 'blue',
-                    width: '40px',
-                    height: '40px',
-                    position: 'absolute',
-                    right: '0px',
-                }}
-            />
             <AnimationElement />
+            <AnimationElement animationPeriodicity={5} />
             <StyledRowCnt>
                 <StyledCnt>
                     <StyledRowCnt>

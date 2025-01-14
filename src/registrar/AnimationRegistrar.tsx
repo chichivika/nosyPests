@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, ReactElement } from 'react';
-import { registerNodeAnimation, UserAnimationSettings } from './registrar';
+import { pestsRegistrar, UserAnimationSettings } from './registrar';
 
 type Props = UserAnimationSettings & {
     children: ReactElement;
@@ -13,7 +13,7 @@ export default function AnimationRegistrar({ children, ...animationSettings }: P
         if (childRef.current === null) {
             return;
         }
-        registerNodeAnimation({ ...animationSettings, domEl: childRef.current });
+        pestsRegistrar.registerNodeAnimation({ ...animationSettings, domEl: childRef.current });
     });
 
     return React.cloneElement(Child, { ref: childRef });
