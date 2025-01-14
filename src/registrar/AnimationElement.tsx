@@ -31,6 +31,7 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         const doAnimation = () => {
             const registeredObject = pestsRegistrar.getRandomAnimationObject();
             if (registeredObject === null) {
+                timerId = setTimeout(doAnimation, animationInterval);
                 return;
             }
             const { domEl } = registeredObject;

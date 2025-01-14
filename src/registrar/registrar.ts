@@ -90,7 +90,7 @@ class Registrar {
 
     public setObjectIsNotShowing(key: string) {
         this.showingData = this.showingData.filter((showedObject) => {
-            return showedObject.key === key;
+            return showedObject.key !== key;
         });
     }
 
