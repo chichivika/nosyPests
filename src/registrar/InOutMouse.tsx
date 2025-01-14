@@ -6,9 +6,9 @@ import { Mouse } from '../mouse/classMouse';
 import { MouseProps, defaultMouseProps } from '../mouse/mouseUtils';
 
 type Props = MouseProps & {
-    top?: number;
     left?: number;
     right?: number;
+    top?: number;
     bottom?: number;
     animationPause?: number;
     animationDuration?: number;
@@ -35,22 +35,27 @@ const keyFramesInOut = (width: number, isTurnedLeft: boolean) => keyframes`
 const StyledFixedMouseCnt = styled.div<{
     $width: number;
     $height: number;
-    $bottom: number;
     $left?: number;
     $right?: number;
+    $top?: number;
+    $bottom?: number;
 }>(
     (props) => css`
         position: absolute;
         overflow: hidden;
         width: ${props.$width}px;
         height: ${props.$height}px;
-        left: ${props.$left ? `${props.$left}px` : undefined};
-        right: ${props.$right ? `${props.$right}px` : undefined};
-        bottom: ${props.$bottom}px;
+        left: ${getPxStringIfExists(props.$left)};
+        right: ${getPxStringIfExists(props.$right)};
+        top: ${getPxStringIfExists(props.$top)};
+        bottom: ${getPxStringIfExists(props.$bottom)};
     `,
 );
+function getPxStringIfExists(number?: number): string | undefined {
+    return typeof number === 'number' ? `${number}px` : undefined;
+}
 const getAnimationRule = (width: number, isTurnedLeft: boolean, animationDuration: number) => css`
-    ${keyFramesInOut(width, isTurnedLeft)} ${animationDuration}s linear 1;
+    ${keyFramesInOut(width, isTurnedLeft)} ${animationDuration}s linear infinite;
 `;
 const StyledMovedMouseCnt = styled.div<{
     $width: number;
@@ -66,11 +71,11 @@ const StyledMovedMouseCnt = styled.div<{
         animation-delay: ${props.$animationDelay}s;
     `,
 );
-export default function MouseWrapper({
-    top,
+export default function InOutMouse({
     left,
     right,
-    bottom = 0,
+    top,
+    bottom,
     animationPause = 20,
     animationDuration = 6,
     animationDelay = 0,
@@ -106,31 +111,35 @@ export default function MouseWrapper({
 
     const width = Mouse.getWidthByHeight(height);
     const isTurnedLeft = animationDirection === 'left';
+
+    if (!showMouse) {
+        return null;
+    }
+
     return (
-        showMouse && (
-            <StyledFixedMouseCnt
+        <StyledFixedMouseCnt
+            $width={width}
+            $height={height}
+            $left={left}
+            $right={right}
+            $top={top}
+            $bottom={bottom}
+        >
+            <StyledMovedMouseCnt
                 $width={width}
-                $height={height}
-                $left={left}
-                $right={right}
-                $bottom={bottom}
+                $isTurnedLeft={isTurnedLeft}
+                $animationDuration={animationDuration}
+                $animationDelay={animationDelay}
+                onAnimationEnd={() => {
+                    setShowMouse(false);
+                }}
             >
-                <StyledMovedMouseCnt
-                    $width={width}
-                    $isTurnedLeft={isTurnedLeft}
-                    $animationDuration={animationDuration}
-                    $animationDelay={animationDelay}
-                    onAnimationEnd={() => {
-                        setShowMouse(false);
-                    }}
-                >
-                    <SVGMouse
-                        height={height}
-                        animationDirection={animationDirection}
-                        {...restMouseProps}
-                    />
-                </StyledMovedMouseCnt>
-            </StyledFixedMouseCnt>
-        )
+                <SVGMouse
+                    height={height}
+                    animationDirection={animationDirection}
+                    {...restMouseProps}
+                />
+            </StyledMovedMouseCnt>
+        </StyledFixedMouseCnt>
     );
 }

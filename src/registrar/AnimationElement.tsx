@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { pestsRegistrar, AnimationSettings } from './registrar';
-import SVGMouse from '../mouse/SVGMouse';
 import { Mouse } from '../mouse/classMouse';
+import InOutMouse from './InOutMouse';
 
 type Props = {
     animationPeriodicity?: number;
@@ -74,24 +74,16 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
     const width = Mouse.getWidthByHeight(height);
 
     return ReactDOM.createPortal(
-        <div
-            style={{
-                position: 'absolute',
-                left: isTurnedLeft
-                    ? `${domElPosition.left - width + window.scrollX}px`
-                    : `${domElPosition.right + window.scrollX}px`,
-                top: `${
-                    domElPosition.bottom -
-                    height -
-                    animationSettings.animationBottom +
-                    window.scrollY
-                }px`,
-                height: `${height}px`,
-                width: `${width}px`,
-            }}
-        >
-            <SVGMouse animationDirection={animationDirection} height={height} />
-        </div>,
+        <InOutMouse
+            left={
+                isTurnedLeft
+                    ? domElPosition.left - width + window.scrollX
+                    : domElPosition.right + window.scrollX
+            }
+            top={domElPosition.bottom - height - animationSettings.animationBottom + window.scrollY}
+            height={height}
+            animationDirection={animationDirection}
+        />,
         pestsNode,
     );
 }
