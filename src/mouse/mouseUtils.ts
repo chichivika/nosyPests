@@ -16,3 +16,5 @@ export const defaultMouseProps: ExistedMouseProps = {
     useNoseAnimation: true,
     className: '',
 };
+
+export type AnimationCount = number | 'infinite';

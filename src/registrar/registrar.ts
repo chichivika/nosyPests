@@ -2,11 +2,9 @@ import { ExistedPropsObject } from '../utils/typeUtils';
 
 // ================== types ==============================
 
-type AnimationName = 'mouse' | 'roach';
 type AnimationDirection = 'left' | 'right';
 
 export type UserAnimationSettings = {
-    animationName?: AnimationName;
     animationDirection?: AnimationDirection;
     animationHeight?: number;
     animationBottom?: number;
@@ -17,7 +15,7 @@ export type AnimationSettings = ExistedPropsObject<UserAnimationSettings>;
 export type UserRegisteredObject = UserAnimationSettings & {
     domEl: HTMLElement;
 };
-type RegisteredObject = ExistedPropsObject<UserRegisteredObject> & {
+export type RegisteredObject = ExistedPropsObject<UserRegisteredObject> & {
     key: string;
 };
 type RegisteredData = RegisteredObject[];
@@ -31,7 +29,6 @@ type ShowingData = ShowingObject[];
 
 class Registrar {
     private static readonly defaultAnimationValues: UserAnimationSettings = {
-        animationName: 'mouse',
         animationDirection: 'left',
         animationHeight: 40,
         animationBottom: 0,
@@ -53,11 +50,29 @@ class Registrar {
     }
 
     public registerNodeAnimation(param: UserRegisteredObject) {
+        const key = this.getNextKey();
         this.registeredData.push({
             ...Registrar.defaultAnimationValues,
             ...param,
-            key: this.getNextKey(),
+            key,
         } as RegisteredObject);
+        // eslint-disable-next-line no-console
+        console.log(
+            JSON.stringify(
+                this.registeredData.map((data) => ({
+                    ...data,
+                    domEl: null,
+                })),
+            ),
+        );
+        return key;
+    }
+
+    public unregisterNodeAnimation(key: string) {
+        this.registeredData = this.registeredData.filter((registeredObject) => {
+            return registeredObject.key !== key;
+        });
+        this.setObjectIsNotShowing(key);
     }
 
     public getRandomAnimationObject(): RegisteredObject | null {

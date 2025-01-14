@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { pestsRegistrar, AnimationSettings } from './registrar';
+import { pestsRegistrar, RegisteredObject } from './registrar';
 import { Mouse } from '../mouse/classMouse';
 import InOutMouse from './InOutMouse';
 
@@ -14,61 +14,77 @@ type DomElPosition = {
     top: number;
     bottom: number;
 };
-export default function AnimationElement({ animationPeriodicity = 10, disabled = false }: Props) {
-    const [animationSettings, setAnimationSettings] = useState<AnimationSettings | null>(null);
-    const [domElPosition, setDomElPosition] = useState<DomElPosition | null>(null);
+type AnimationObject = DomElPosition & RegisteredObject;
 
+export default function AnimationElement({ animationPeriodicity = 10, disabled = false }: Props) {
+    const [animationObject, setAnimationObject] = useState<AnimationObject | null>(null);
+
+    const needSetTimer = !disabled && animationObject === null;
     useEffect(() => {
+        if (!needSetTimer) {
+            return;
+        }
+
         let timerId: ReturnType<typeof setTimeout>;
         const animationInterval = animationPeriodicity * 1000;
 
         const doAnimation = () => {
-            if (disabled) {
-                return;
-            }
             const registeredObject = pestsRegistrar.getRandomAnimationObject();
             if (registeredObject === null) {
                 return;
             }
-            const { domEl, ...animationObject } = registeredObject;
+            const { domEl } = registeredObject;
             const domRect = domEl.getBoundingClientRect();
 
-            setAnimationSettings(animationObject);
-            setDomElPosition({
+            setAnimationObject({
                 left: domRect.left,
                 right: domRect.right,
                 top: domRect.top,
                 bottom: domRect.bottom,
+                ...registeredObject,
             });
             timerId = setTimeout(doAnimation, animationInterval);
         };
 
         timerId = setTimeout(doAnimation, animationInterval);
 
-        function onResize() {
-            clearInterval(timerId);
-        }
-        window.addEventListener('resize', onResize);
-
         return () => {
             if (timerId) {
                 clearInterval(timerId);
             }
-            window.addEventListener('resize', onResize);
         };
-    }, [animationPeriodicity, disabled]);
+    }, [animationPeriodicity, needSetTimer]);
+
+    useEffect(() => {
+        function onResize() {
+            if (animationObject === null) {
+                return;
+            }
+
+            const { domEl } = animationObject;
+            const domRect = domEl.getBoundingClientRect();
+            setAnimationObject({
+                ...animationObject,
+                left: domRect.left,
+                right: domRect.right,
+                top: domRect.top,
+                bottom: domRect.bottom,
+            });
+        }
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+        };
+    });
 
     const pestsNode = pestsRegistrar.pestsDomContainer;
 
-    if (disabled || animationSettings === null || domElPosition === null) {
+    if (disabled || animationObject === null) {
         return null;
     }
 
-    if (animationSettings.animationName !== 'mouse') {
-        return null;
-    }
-
-    const { animationDirection, animationHeight } = animationSettings;
+    const { animationDirection, animationHeight } = animationObject;
     const isTurnedLeft = animationDirection === 'left';
     const height = animationHeight;
     const width = Mouse.getWidthByHeight(height);
@@ -77,12 +93,17 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         <InOutMouse
             left={
                 isTurnedLeft
-                    ? domElPosition.left - width + window.scrollX
-                    : domElPosition.right + window.scrollX
+                    ? animationObject.left - width + window.scrollX
+                    : animationObject.right + window.scrollX
             }
-            top={domElPosition.bottom - height - animationSettings.animationBottom + window.scrollY}
+            top={animationObject.bottom - height - animationObject.animationBottom + window.scrollY}
             height={height}
             animationDirection={animationDirection}
+            animationDelay={0}
+            onAnimationEnd={() => {
+                pestsRegistrar.setObjectIsNotShowing(animationObject.key);
+                setAnimationObject(null);
+            }}
         />,
         pestsNode,
     );

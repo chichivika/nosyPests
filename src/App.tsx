@@ -28,7 +28,7 @@ function App() {
     return (
         <div className='app'>
             <header className='app-header'>Nosy Pests</header>
-            <AnimationElement />
+            <AnimationElement animationPeriodicity={4} />
             <AnimationElement animationPeriodicity={5} />
             <StyledRowCnt>
                 <StyledCnt>
@@ -74,7 +74,7 @@ function App() {
                                 bottom={100}
                                 animationDelay={0.5}
                             >
-                                <MouseWrapper animationPause={5} height={100}>
+                                <MouseWrapper animationPause={15} height={100}>
                                     <div
                                         style={{
                                             border: '1px solid grey',
@@ -91,7 +91,7 @@ function App() {
                     <StyledRowCnt>
                         <div style={{ backgroundColor: 'grey', width: '50px', height: '50px' }} />
                         <div style={{ backgroundColor: 'blue', width: '50px', height: '50px' }} />
-                        <AnimationRegistrar animationHeight={20} animationDirection='right'>
+                        <AnimationRegistrar animationHeight={20} animationDirection='left'>
                             <div
                                 style={{ backgroundColor: 'pink', width: '50px', height: '50px' }}
                             />
@@ -104,17 +104,23 @@ function App() {
                         <div style={{ backgroundColor: 'green', width: '50px', height: '50px' }} />
                     </StyledRowCnt>
                     <AnimationRegistrar
-                        animationHeight={100}
-                        animationBottom={50}
+                        animationHeight={40}
+                        animationBottom={0}
                         animationDirection='right'
                     >
-                        <div
-                            style={{
-                                border: '1px solid grey',
-                                width: '300px',
-                                height: '300px',
-                            }}
-                        />
+                        <AnimationRegistrar
+                            animationHeight={100}
+                            animationBottom={50}
+                            animationDirection='right'
+                        >
+                            <div
+                                style={{
+                                    border: '1px solid grey',
+                                    width: '300px',
+                                    height: '300px',
+                                }}
+                            />
+                        </AnimationRegistrar>
                     </AnimationRegistrar>
                 </StyledCnt>
             </StyledRowCnt>
