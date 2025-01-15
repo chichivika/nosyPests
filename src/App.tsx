@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import AnimationElement from './registrar/AnimationElement';
-import AnimationRegistrar from './registrar/AnimationRegistrar';
-import MouseWrapper from './registrar/MouseWrapper';
+import AnimationElement from './nosyPests/registrar/AnimationElement';
+import AnimationRegistrar from './nosyPests/registrar/AnimationRegistrar';
+import MouseWrapper from './nosyPests/wrapper/MouseWrapper';
 
 const StyledCnt = styled.div`
     display: flex;
@@ -28,10 +28,7 @@ function App() {
     return (
         <div className='app'>
             <header className='app-header'>Nosy Pests</header>
-            <AnimationElement animationPeriodicity={4} />
             <AnimationElement animationPeriodicity={5} />
-            <AnimationElement animationPeriodicity={5} />
-            <AnimationElement animationPeriodicity={15} />
             <StyledRowCnt>
                 <StyledCnt>
                     <StyledRowCnt>
@@ -63,25 +60,30 @@ function App() {
                             />
                         </MouseWrapper>
                     </StyledRowCnt>
-                    <MouseWrapper animationPause={5} height={15} bottom={175} animationDelay={1.5}>
+                    <MouseWrapper
+                        animationPause={5}
+                        height={15}
+                        animationBottom={175}
+                        animationDelay={1.5}
+                    >
                         <MouseWrapper
                             animationPause={5}
                             height={25}
-                            bottom={150}
+                            animationBottom={150}
                             animationDelay={1}
                         >
                             <MouseWrapper
                                 animationPause={5}
                                 height={50}
-                                bottom={100}
+                                animationBottom={100}
                                 animationDelay={0.5}
                             >
                                 <MouseWrapper animationPause={15} height={100}>
                                     <div
                                         style={{
                                             border: '1px solid grey',
-                                            width: '200px',
-                                            height: '200px',
+                                            width: '300px',
+                                            height: '300px',
                                         }}
                                     />
                                 </MouseWrapper>
@@ -91,26 +93,26 @@ function App() {
                 </StyledCnt>
                 <StyledCnt>
                     <StyledRowCnt>
-                        <div style={{ backgroundColor: 'grey', width: '50px', height: '50px' }} />
-                        <AnimationRegistrar animationHeight={20} animationDirection='left'>
+                        <div style={{ backgroundColor: 'grey', width: '15px', height: '15px' }} />
+                        <AnimationRegistrar height={20} animationDirection='left'>
                             <div
-                                style={{ backgroundColor: 'blue', width: '50px', height: '50px' }}
+                                style={{ backgroundColor: 'blue', width: '20px', height: '20px' }}
                             />
                         </AnimationRegistrar>
-                        <AnimationRegistrar animationHeight={20} animationDirection='left'>
+                        <AnimationRegistrar height={30} animationDirection='left'>
                             <div
-                                style={{ backgroundColor: 'pink', width: '50px', height: '50px' }}
+                                style={{ backgroundColor: 'pink', width: '30px', height: '30px' }}
                             />
                         </AnimationRegistrar>
-                        <AnimationRegistrar animationHeight={30} animationDirection='right'>
+                        <AnimationRegistrar height={30} animationDirection='right'>
                             <div
-                                style={{ backgroundColor: 'orange', width: '50px', height: '50px' }}
+                                style={{ backgroundColor: 'orange', width: '40px', height: '40px' }}
                             />
                         </AnimationRegistrar>
                         <div style={{ backgroundColor: 'green', width: '50px', height: '50px' }} />
                     </StyledRowCnt>
                     <AnimationRegistrar
-                        animationHeight={100}
+                        height={100}
                         animationBottom={50}
                         animationDirection='right'
                     >

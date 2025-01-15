@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { pestsRegistrar, RegisteredObject } from './registrar';
+import { pestsRegistrar } from './registrar';
 import { Mouse } from '../mouse/classMouse';
-import InOutMouse from './InOutMouse';
+import InOutMouse from '../mouse/InOutMouse';
 
 type Props = {
     animationPeriodicity?: number;
@@ -14,7 +14,9 @@ type DomElPosition = {
     top: number;
     bottom: number;
 };
-type AnimationObject = DomElPosition & RegisteredObject;
+type AnimationObject = DomElPosition & {
+    key: string;
+};
 
 export default function AnimationElement({ animationPeriodicity = 10, disabled = false }: Props) {
     const [animationObject, setAnimationObject] = useState<AnimationObject | null>(null);
@@ -42,7 +44,7 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
                 right: domRect.right,
                 top: domRect.top,
                 bottom: domRect.bottom,
-                ...registeredObject,
+                key: registeredObject.key,
             });
             timerId = setTimeout(doAnimation, animationInterval);
         };
@@ -62,7 +64,12 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
                 return;
             }
 
-            const { domEl } = animationObject;
+            const domEl = pestsRegistrar.getDomElByKey(animationObject.key);
+            if (domEl === null) {
+                window.removeEventListener('resize', onResize);
+                return;
+            }
+
             const domRect = domEl.getBoundingClientRect();
             setAnimationObject({
                 ...animationObject,
@@ -85,9 +92,13 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         return null;
     }
 
-    const { animationDirection, animationHeight } = animationObject;
+    const animationSettings = pestsRegistrar.getAnimationSettingsByKey(animationObject.key);
+    if (animationSettings === null) {
+        return null;
+    }
+    const { animationDirection, height, animationBottom, animationDelay } = animationSettings;
+
     const isTurnedLeft = animationDirection === 'left';
-    const height = animationHeight;
     const width = Mouse.getWidthByHeight(height);
 
     return ReactDOM.createPortal(
@@ -97,10 +108,10 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
                     ? animationObject.left - width + window.scrollX
                     : animationObject.right + window.scrollX
             }
-            top={animationObject.bottom - height - animationObject.animationBottom + window.scrollY}
+            top={animationObject.bottom - height - animationBottom + window.scrollY}
             height={height}
             animationDirection={animationDirection}
-            animationDelay={0}
+            animationDelay={animationDelay}
             onAnimationEnd={() => {
                 pestsRegistrar.setObjectIsNotShowing(animationObject.key);
                 setAnimationObject(null);

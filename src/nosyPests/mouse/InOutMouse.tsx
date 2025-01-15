@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import SVGMouse from '../mouse/SVGMouse';
-import { Mouse } from '../mouse/classMouse';
-import { MouseProps, defaultMouseProps, AnimationCount } from '../mouse/mouseUtils';
+import SVGMouse from './SVGMouse';
+import { Mouse } from './classMouse';
+import { MouseProps, defaultMouseProps, AnimationCount } from './mouseUtils';
 
 type Props = MouseProps & {
     left?: number;
@@ -20,11 +20,11 @@ const keyFramesInOut = (width: number, isTurnedLeft: boolean) => keyframes`
         left: ${isTurnedLeft ? `${width}px` : undefined};
         right: ${isTurnedLeft ? undefined : `${width}px`};
     }
-    15% {
+    10% {
         left: ${isTurnedLeft ? '0px' : undefined};
         right: ${isTurnedLeft ? undefined : '0px'};
     }
-    75% {
+    90% {
         left: ${isTurnedLeft ? '0px' : undefined};
         right: ${isTurnedLeft ? undefined : '0px'};
     }

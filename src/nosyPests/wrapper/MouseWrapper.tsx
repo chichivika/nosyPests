@@ -3,12 +3,12 @@ import React, { ReactElement, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { Mouse } from '../mouse/classMouse';
 import { MouseProps, defaultMouseProps } from '../mouse/mouseUtils';
-import InOutMouse from './InOutMouse';
+import InOutMouse from '../mouse/InOutMouse';
 
 type Props = MouseProps & {
-    disabled?: boolean;
     children: ReactElement;
-    bottom?: number;
+    disabled?: boolean;
+    animationBottom?: number;
     animationPause?: number;
     animationDuration?: number;
     animationDelay?: number;
@@ -19,7 +19,7 @@ const StyledMouseWrapper = styled.div`
 
 export default function MouseWrapper({
     children,
-    bottom = 0,
+    animationBottom = 0,
     animationPause = 20,
     disabled = false,
     ...inOutProps
@@ -64,7 +64,7 @@ export default function MouseWrapper({
                 <InOutMouse
                     left={isTurnedLeft ? -width : undefined}
                     right={isTurnedLeft ? undefined : -width}
-                    bottom={bottom}
+                    bottom={animationBottom}
                     height={height}
                     animationDirection={animationDirection}
                     onAnimationEnd={() => {
@@ -75,4 +75,32 @@ export default function MouseWrapper({
             )}
         </StyledMouseWrapper>
     );
+}
+
+function useDoingAnimation(animationPause: number) {
+    const [doingAnimation, setDoingAnimation] = useState<boolean>(true);
+    const prevDoingAnimation = useRef<boolean>(true);
+
+    useEffect(() => {
+        if (prevDoingAnimation.current === true && doingAnimation === false) {
+            prevDoingAnimation.current = doingAnimation;
+            if (animationPause <= 0) {
+                return;
+            }
+            const timerId = setTimeout(() => {
+                setDoingAnimation(true);
+            }, animationPause * 1000);
+
+            return () => {
+                if (timerId) {
+                    clearTimeout(timerId);
+                }
+            };
+        }
+        if (doingAnimation !== prevDoingAnimation.current) {
+            prevDoingAnimation.current = doingAnimation;
+        }
+    }, [doingAnimation, animationPause]);
+
+    return [doingAnimation, setDoingAnimation];
 }

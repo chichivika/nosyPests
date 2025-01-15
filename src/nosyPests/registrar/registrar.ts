@@ -1,14 +1,12 @@
 import { ExistedPropsObject } from '../utils/typeUtils';
+import { MouseProps, defaultMouseProps } from '../mouse/mouseUtils';
 
 // ================== types ==============================
 
-type AnimationDirection = 'left' | 'right';
-
-export type UserAnimationSettings = {
-    animationDirection?: AnimationDirection;
-    animationHeight?: number;
+export type UserAnimationSettings = MouseProps & {
     animationBottom?: number;
-    animationTop?: number;
+    animationDuration?: number;
+    animationDelay?: number;
 };
 export type AnimationSettings = ExistedPropsObject<UserAnimationSettings>;
 
@@ -29,9 +27,9 @@ type ShowingData = ShowingObject[];
 
 class Registrar {
     private static readonly defaultAnimationValues: UserAnimationSettings = {
-        animationDirection: 'left',
-        animationHeight: 40,
         animationBottom: 0,
+        animationDuration: 5,
+        animationDelay: 0,
     };
 
     private currentKeyNumber: number = 0;
@@ -44,27 +42,20 @@ class Registrar {
 
     constructor() {
         const pestsCnt = document.createElement('div');
-        pestsCnt.dataset.name = 'global-pests-container';
+        pestsCnt.dataset.name = 'nosy-pests-global-container';
         document.body.append(pestsCnt);
         this.pestsDomContainer = pestsCnt;
     }
 
-    public registerNodeAnimation(param: UserRegisteredObject) {
+    public registerNodeAnimation(param: UserRegisteredObject): string {
         const key = this.getNextKey();
         this.registeredData.push({
             ...Registrar.defaultAnimationValues,
+            ...defaultMouseProps,
             ...param,
             key,
         } as RegisteredObject);
-        // eslint-disable-next-line no-console
-        console.log(
-            JSON.stringify(
-                this.registeredData.map((data) => ({
-                    ...data,
-                    domEl: null,
-                })),
-            ),
-        );
+
         return key;
     }
 
@@ -92,6 +83,20 @@ class Registrar {
         this.showingData = this.showingData.filter((showedObject) => {
             return showedObject.key !== key;
         });
+    }
+
+    public getDomElByKey(key: string): HTMLElement | null {
+        const registeredObject = this.registeredData.find((data) => data.key === key);
+        return registeredObject?.domEl || null;
+    }
+
+    public getAnimationSettingsByKey(animationKey: string): AnimationSettings | null {
+        const registeredObject = this.registeredData.find((data) => data.key === animationKey);
+        if (!registeredObject) {
+            return null;
+        }
+        const { domEl, key, ...animationSettings } = registeredObject;
+        return animationSettings;
     }
 
     // ================== private ===================================

@@ -1,6 +1,13 @@
+
+.app {
+  height: 100vh;
+  overflow: auto;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: 1fr;
+}
+
 body {
   margin: 0;
-  width: 100wh;
-  height: 100wh;
   overflow: auto;
 }

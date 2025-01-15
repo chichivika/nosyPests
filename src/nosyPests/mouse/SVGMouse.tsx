@@ -25,7 +25,7 @@ export default function SVGMouse(props: MouseProps) {
             width={width}
             height={height}
             style={{ transform }}
-            className={`mouse-svg ${className}`}
+            className={`nosy-pests-mouse-svg ${className}`}
         >
             {renderHead(mouseObject)}
             {renderEye(mouseObject)}
