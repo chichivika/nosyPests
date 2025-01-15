@@ -32,31 +32,9 @@ export default function MouseWrapper({
     const width = Mouse.getWidthByHeight(height);
     const isTurnedLeft = animationDirection === 'left';
 
-    const [doingAnimation, setDoingAnimation] = useState<boolean>(true);
-    const prevDoingAnimation = useRef<boolean>(true);
-
-    useEffect(() => {
-        if (prevDoingAnimation.current === true && doingAnimation === false) {
-            prevDoingAnimation.current = doingAnimation;
-            if (animationPause <= 0) {
-                return;
-            }
-            const timerId = setTimeout(() => {
-                setDoingAnimation(true);
-            }, animationPause * 1000);
-
-            return () => {
-                if (timerId) {
-                    clearTimeout(timerId);
-                }
-            };
-        }
-        if (doingAnimation !== prevDoingAnimation.current) {
-            prevDoingAnimation.current = doingAnimation;
-        }
-    }, [doingAnimation, animationPause]);
-
+    const [doingAnimation, setDoingAnimation] = useDoingAnimation(animationPause, disabled);
     const needShowMouse = !disabled && doingAnimation;
+
     return (
         <StyledMouseWrapper>
             {children}
@@ -77,12 +55,12 @@ export default function MouseWrapper({
     );
 }
 
-function useDoingAnimation(animationPause: number) {
+function useDoingAnimation(animationPause: number, disabled: boolean) {
     const [doingAnimation, setDoingAnimation] = useState<boolean>(true);
     const prevDoingAnimation = useRef<boolean>(true);
 
     useEffect(() => {
-        if (prevDoingAnimation.current === true && doingAnimation === false) {
+        if (!disabled && prevDoingAnimation.current === true && doingAnimation === false) {
             prevDoingAnimation.current = doingAnimation;
             if (animationPause <= 0) {
                 return;
@@ -100,7 +78,10 @@ function useDoingAnimation(animationPause: number) {
         if (doingAnimation !== prevDoingAnimation.current) {
             prevDoingAnimation.current = doingAnimation;
         }
-    }, [doingAnimation, animationPause]);
+    }, [doingAnimation, animationPause, disabled]);
 
-    return [doingAnimation, setDoingAnimation];
+    return [doingAnimation, setDoingAnimation] as [
+        boolean,
+        React.Dispatch<React.SetStateAction<boolean>>,
+    ];
 }

@@ -13,6 +13,7 @@ type Props = MouseProps & {
     animationDuration?: number;
     animationDelay?: number;
     animationCount?: AnimationCount;
+    outerPosition?: 'absolute' | 'fixed';
     onAnimationEnd?: () => void;
 };
 const keyFramesInOut = (width: number, isTurnedLeft: boolean) => keyframes`
@@ -40,9 +41,10 @@ const StyledFixedMouseCnt = styled.div<{
     $right?: number;
     $top?: number;
     $bottom?: number;
+    $outerPosition: string;
 }>(
     (props) => css`
-        position: absolute;
+        position: ${props.$outerPosition};
         overflow: hidden;
         width: ${props.$width}px;
         height: ${props.$height}px;
@@ -96,6 +98,7 @@ export default function InOutMouse({
     animationDuration = 6,
     animationDelay = 0,
     animationCount = 1,
+    outerPosition = 'absolute',
     onAnimationEnd,
     ...mouseProps
 }: Props) {
@@ -115,6 +118,7 @@ export default function InOutMouse({
             $right={right}
             $top={top}
             $bottom={bottom}
+            $outerPosition={outerPosition}
         >
             <StyledMovedMouseCnt
                 $width={width}
