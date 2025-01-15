@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
+import React, { useReducer, useEffect, useLayoutEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { pestsRegistrar, AnimationSettings } from './registrar';
 import { Mouse } from '../mouse/classMouse';
@@ -14,13 +16,14 @@ type DomElPosition = {
     top: number;
     bottom: number;
 };
+
 type AnimationObject = DomElPosition &
     AnimationSettings & {
         key: string;
     };
 
 export default function AnimationElement({ animationPeriodicity = 10, disabled = false }: Props) {
-    const [animationObject, setAnimationObject] = useAnimationObject(
+    const [animationObject, dispatchAnimationObject] = useAnimationObject(
         animationPeriodicity,
         disabled,
     );
@@ -33,6 +36,14 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
     const isTurnedLeft = animationDirection === 'left';
     const width = Mouse.getWidthByHeight(height);
 
+    console.log(
+        `render animationRlement scroll bottom: 
+        ${animationObject.bottom}`,
+    );
+    console.log(
+        `render animationRlement top: 
+        ${animationObject.bottom - height - animationBottom + window.scrollY}`,
+    );
     return ReactDOM.createPortal(
         <InOutMouse
             left={
@@ -46,73 +57,76 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
             animationDelay={animationDelay}
             outerPosition='fixed'
             onAnimationEnd={() => {
-                pestsRegistrar.setObjectIsNotShowing(animationObject.key);
-                setAnimationObject(null);
+                dispatchAnimationObject({ type: 'clear' });
             }}
         />,
         pestsRegistrar.pestsDomContainer,
     );
 }
 
-function useWindowResize([animationObject, setAnimationObject]: [
-    AnimationObject | null,
-    React.Dispatch<React.SetStateAction<AnimationObject | null>>,
-]) {
-    useEffect(() => {
+function useWindowResize(
+    animationKey: string | null,
+    dispatchAnimationObject: React.Dispatch<AnimationObjectAction>,
+) {
+    useLayoutEffect(() => {
+        if (animationKey === null) {
+            return;
+        }
+        console.log(` useWindowResize animationKey ${animationKey}`);
         function onResize() {
-            if (animationObject === null) {
+            if (animationKey === null) {
                 return;
             }
-
-            const domEl = pestsRegistrar.getDomElByKey(animationObject.key);
+            const domEl = pestsRegistrar.getDomElByKey(animationKey);
             if (domEl === null) {
-                window.removeEventListener('resize', onResize);
                 return;
             }
 
             const domRect = domEl.getBoundingClientRect();
-            setAnimationObject({
-                ...animationObject,
-                left: domRect.left,
-                right: domRect.right,
-                top: domRect.top,
-                bottom: domRect.bottom,
+            console.log(`onScroll bottom: ${domRect.bottom}`);
+            dispatchAnimationObject({
+                type: 'updateDomPosition',
+                payload: {
+                    left: domRect.left,
+                    right: domRect.right,
+                    top: domRect.top,
+                    bottom: domRect.bottom,
+                },
             });
         }
-        window.addEventListener('resize', onResize);
 
-        return () => {
-            window.removeEventListener('resize', onResize);
-        };
-    });
-}
-
-function useWindowWheel([animationObject, setAnimationObject]: [
-    AnimationObject | null,
-    React.Dispatch<React.SetStateAction<AnimationObject | null>>,
-]) {
-    useEffect(() => {
-        function clearAnimation() {
-            if (animationObject === null) {
+        function addScrollEventListener(node: HTMLElement | null) {
+            if (node === null) {
                 return;
             }
-            pestsRegistrar.setObjectIsNotShowing(animationObject.key);
-            setAnimationObject(null);
+            node.addEventListener('scroll', onResize);
+            addScrollEventListener(node.parentElement);
         }
-        window.addEventListener('mousemove', clearAnimation);
-        window.addEventListener('wheel', clearAnimation);
+
+        function clearScrollEventListener(node: HTMLElement | null) {
+            if (node === null) {
+                return;
+            }
+            node.removeEventListener('scroll', onResize);
+            clearScrollEventListener(node.parentElement);
+        }
+
+        window.addEventListener('resize', onResize);
+
+        const domEl = pestsRegistrar.getDomElByKey(animationKey);
+        addScrollEventListener(domEl);
 
         return () => {
-            window.removeEventListener('mousemove', clearAnimation);
-            window.removeEventListener('wheel', clearAnimation);
+            window.removeEventListener('scroll', onResize);
+            clearScrollEventListener(domEl);
         };
-    });
+    }, [animationKey, dispatchAnimationObject]);
 }
 
 function useAnimationPauseTimer(
-    [animationObject, setAnimationObject]: [
+    [animationObject, dispatchAnimationObject]: [
         AnimationObject | null,
-        React.Dispatch<React.SetStateAction<AnimationObject | null>>,
+        React.Dispatch<AnimationObjectAction>,
     ],
     animationPeriodicity: number,
     disabled: boolean,
@@ -135,13 +149,16 @@ function useAnimationPauseTimer(
             const { domEl, key, ...settings } = registeredObject;
             const domRect = domEl.getBoundingClientRect();
 
-            setAnimationObject({
-                left: domRect.left,
-                right: domRect.right,
-                top: domRect.top,
-                bottom: domRect.bottom,
-                key,
-                ...settings,
+            dispatchAnimationObject({
+                type: 'set',
+                payload: {
+                    left: domRect.left,
+                    right: domRect.right,
+                    top: domRect.top,
+                    bottom: domRect.bottom,
+                    key,
+                    ...settings,
+                },
             });
             timerId = setTimeout(doAnimation, animationInterval);
         };
@@ -153,18 +170,54 @@ function useAnimationPauseTimer(
                 clearInterval(timerId);
             }
         };
-    }, [animationPeriodicity, needSetTimer, setAnimationObject]);
+    }, [animationPeriodicity, needSetTimer, dispatchAnimationObject]);
+}
+
+type AnimationObjectState = AnimationObject | null;
+type AnimationObjectAction =
+    | {
+          type: 'clear';
+      }
+    | {
+          type: 'set';
+          payload: AnimationObject;
+      }
+    | {
+          type: 'updateDomPosition';
+          payload: DomElPosition;
+      };
+function animationObjectReducer(state: AnimationObjectState, action: AnimationObjectAction) {
+    switch (action.type) {
+        case 'clear':
+            if (state === null) {
+                return state;
+            }
+            pestsRegistrar.setObjectIsNotShowing(state.key);
+            return null;
+        case 'updateDomPosition':
+            if (state !== null) {
+                return { ...state, ...action.payload };
+            }
+            return state;
+        case 'set':
+            return action.payload;
+        default:
+            return state;
+    }
 }
 
 function useAnimationObject(animationPeriodicity: number, disabled: boolean) {
-    const [animationObject, setAnimationObject] = useState<AnimationObject | null>(null);
+    const [animationObject, dispatchAnimationObject] = useReducer(animationObjectReducer, null);
 
-    useAnimationPauseTimer([animationObject, setAnimationObject], animationPeriodicity, disabled);
-    useWindowResize([animationObject, setAnimationObject]);
-    useWindowWheel([animationObject, setAnimationObject]);
+    useAnimationPauseTimer(
+        [animationObject, dispatchAnimationObject],
+        animationPeriodicity,
+        disabled,
+    );
+    useWindowResize(animationObject?.key || null, dispatchAnimationObject);
 
-    return [animationObject, setAnimationObject] as [
+    return [animationObject, dispatchAnimationObject] as [
         AnimationObject | null,
-        React.Dispatch<React.SetStateAction<AnimationObject | null>>,
+        React.Dispatch<AnimationObjectAction>,
     ];
 }

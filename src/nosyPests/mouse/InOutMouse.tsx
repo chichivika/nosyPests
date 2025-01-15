@@ -110,6 +110,8 @@ export default function InOutMouse({
     const width = Mouse.getWidthByHeight(height);
     const isTurnedLeft = animationDirection === 'left';
 
+    // eslint-disable-next-line no-console
+    console.log(`render inout top: ${top}`);
     return (
         <StyledFixedMouseCnt
             $width={width}
