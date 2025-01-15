@@ -7,6 +7,7 @@ export type UserAnimationSettings = MouseProps & {
     animationBottom?: number;
     animationDuration?: number;
     animationDelay?: number;
+    isInside?: boolean;
 };
 export type AnimationSettings = ExistedPropsObject<UserAnimationSettings>;
 

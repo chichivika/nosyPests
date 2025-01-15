@@ -12,6 +12,7 @@ type Props = MouseProps & {
     animationPause?: number;
     animationDuration?: number;
     animationDelay?: number;
+    isInside?: boolean;
 };
 const StyledMouseWrapper = styled.div`
     position: relative;
@@ -24,7 +25,12 @@ export default function MouseWrapper({
     disabled = false,
     ...inOutProps
 }: Props) {
-    const { height, animationDirection, ...restInOutProps } = {
+    const {
+        height,
+        animationDirection,
+        isInside = false,
+        ...restInOutProps
+    } = {
         ...defaultMouseProps,
         ...inOutProps,
     };
@@ -35,13 +41,14 @@ export default function MouseWrapper({
     const [doingAnimation, setDoingAnimation] = useDoingAnimation(animationPause, disabled);
     const needShowMouse = !disabled && doingAnimation;
 
+    const position = getHPosition(isTurnedLeft, isInside, width);
     return (
         <StyledMouseWrapper>
             {children}
             {needShowMouse && (
                 <InOutMouse
-                    left={isTurnedLeft ? -width : undefined}
-                    right={isTurnedLeft ? undefined : -width}
+                    left={position.left}
+                    right={position.right}
                     bottom={animationBottom}
                     height={height}
                     animationDirection={animationDirection}
@@ -53,6 +60,26 @@ export default function MouseWrapper({
             )}
         </StyledMouseWrapper>
     );
+}
+
+function getHPosition(
+    isTurnedLeft: boolean,
+    isInside: boolean,
+    width: number,
+): {
+    left?: number;
+    right?: number;
+} {
+    if (!isInside) {
+        return {
+            left: isTurnedLeft ? -width : undefined,
+            right: isTurnedLeft ? undefined : -width,
+        };
+    }
+    return {
+        left: isTurnedLeft ? undefined : 0,
+        right: isTurnedLeft ? 0 : undefined,
+    };
 }
 
 function useDoingAnimation(animationPause: number, disabled: boolean) {

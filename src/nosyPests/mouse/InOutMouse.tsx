@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
+import React, { RefObject } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import SVGMouse from './SVGMouse';
 import { Mouse } from './classMouse';
@@ -14,6 +14,7 @@ type Props = MouseProps & {
     animationDelay?: number;
     animationCount?: AnimationCount;
     outerPosition?: 'absolute' | 'fixed';
+    ref?: RefObject<HTMLDivElement>;
     onAnimationEnd?: () => void;
 };
 const keyFramesInOut = (width: number, isTurnedLeft: boolean) => keyframes`
@@ -99,6 +100,7 @@ export default function InOutMouse({
     animationDelay = 0,
     animationCount = 1,
     outerPosition = 'absolute',
+    ref,
     onAnimationEnd,
     ...mouseProps
 }: Props) {
@@ -110,10 +112,9 @@ export default function InOutMouse({
     const width = Mouse.getWidthByHeight(height);
     const isTurnedLeft = animationDirection === 'left';
 
-    // eslint-disable-next-line no-console
-    console.log(`render inout top: ${top}`);
     return (
         <StyledFixedMouseCnt
+            ref={ref}
             $width={width}
             $height={height}
             $left={left}
