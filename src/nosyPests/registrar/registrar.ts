@@ -1,21 +1,12 @@
-import { ExistedPropsObject } from '../utils/typeUtils';
-import { MouseProps, defaultMouseProps } from '../mouse/mouseUtils';
+import { ExistedPropsObject, UserGeneralAnimationParam } from '../utils/types';
 
 // ================== types ==============================
 
-export type UserAnimationSettings = MouseProps & {
-    animationBottom?: number;
-    animationDuration?: number;
-    animationDelay?: number;
-    isInside?: boolean;
+export type UserRegisteredParam = UserGeneralAnimationParam & {
+    targetEl: HTMLElement;
+    containerEl: HTMLDivElement | null;
 };
-export type AnimationSettings = ExistedPropsObject<UserAnimationSettings>;
-
-export type UserRegisteredObject = UserAnimationSettings & {
-    domEl: HTMLElement;
-    renderEl: HTMLDivElement | null;
-};
-export type RegisteredObject = ExistedPropsObject<UserRegisteredObject> & {
+export type RegisteredObject = ExistedPropsObject<UserRegisteredParam> & {
     key: string;
     disablePortal: boolean;
 };
@@ -29,35 +20,18 @@ type ShowingData = ShowingObject[];
 // ==================== class ====================================
 
 class Registrar {
-    private static readonly defaultAnimationValues: UserAnimationSettings = {
-        animationBottom: 0,
-        animationDuration: 5,
-        animationDelay: 0,
-    };
-
     private currentKeyNumber: number = 0;
 
     public registeredData: RegisteredData = [];
 
     public showingData: ShowingData = [];
 
-    public pestsDomContainer: HTMLDivElement;
-
-    constructor() {
-        const pestsCnt = document.createElement('div');
-        pestsCnt.dataset.name = 'nosy-pests-global-container';
-        document.body.append(pestsCnt);
-        this.pestsDomContainer = pestsCnt;
-    }
-
-    public registerNodeAnimation(param: UserRegisteredObject): string {
+    public registerNodeAnimation(param: UserRegisteredParam): string {
         const key = this.getNextKey();
         this.registeredData.push({
-            ...Registrar.defaultAnimationValues,
-            ...defaultMouseProps,
             ...param,
-            disablePortal: param.renderEl !== null,
             key,
+            disablePortal: param.containerEl !== null,
         } as RegisteredObject);
 
         return key;
@@ -89,28 +63,9 @@ class Registrar {
         });
     }
 
-    public getDomElByKey(key: string): HTMLElement | null {
+    public getRegisteredObjectByKey(key: string): RegisteredObject | null {
         const registeredObject = this.registeredData.find((data) => data.key === key);
-        return registeredObject?.domEl || null;
-    }
-
-    public getRenderElByKey(key: string): HTMLElement | null {
-        const registeredObject = this.registeredData.find((data) => data.key === key);
-        return registeredObject?.renderEl || this.pestsDomContainer;
-    }
-
-    public getDisablePortalByKey(key: string): boolean {
-        const registeredObject = this.registeredData.find((data) => data.key === key);
-        return registeredObject?.disablePortal || false;
-    }
-
-    public getAnimationSettingsByKey(animationKey: string): AnimationSettings | null {
-        const registeredObject = this.registeredData.find((data) => data.key === animationKey);
-        if (!registeredObject) {
-            return null;
-        }
-        const { domEl, key, ...animationSettings } = registeredObject;
-        return animationSettings;
+        return registeredObject || null;
     }
 
     // ================== private ===================================

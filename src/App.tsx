@@ -1,10 +1,7 @@
 /* eslint-disable max-len */
 import React from 'react';
 import styled from 'styled-components';
-import AnimationElement from './nosyPests/registrar/AnimationElement';
-import AnimationRegistrar from './nosyPests/registrar/AnimationRegistrar';
-// import AnimationRegistrar from './nosyPests/registrar/AnimationRegistrar';
-// import MouseWrapper from './nosyPests/wrapper/MouseWrapper';
+import PestWrapper from './nosyPests/wrapper/PestWrapper';
 
 const StyledCnt = styled.div`
     display: flex;
@@ -30,7 +27,7 @@ function App() {
     return (
         <div className='app'>
             <header className='app-header'>Nosy Pests</header>
-            <AnimationElement animationPeriodicity={5} />
+            {/* <AnimationElement animationPeriodicity={5} /> */}
             <StyledRowCnt>
                 <StyledCnt>
                     <StyledRowCnt>
@@ -38,7 +35,21 @@ function App() {
                         <div style={{ backgroundColor: 'blue', width: '20px', height: '20px' }} />
                         <div style={{ backgroundColor: 'pink', width: '30px', height: '30px' }} />
                         <div style={{ backgroundColor: 'orange', width: '40px', height: '40px' }} />
-                        <div style={{ backgroundColor: 'green', width: '50px', height: '50px' }} />
+                        <PestWrapper
+                            animationPause={5}
+                            disablePortal={false}
+                            animationDirection='right'
+                        >
+                            <PestWrapper animationPause={5} disablePortal={false}>
+                                <div
+                                    style={{
+                                        backgroundColor: 'green',
+                                        width: '50px',
+                                        height: '50px',
+                                    }}
+                                />
+                            </PestWrapper>
+                        </PestWrapper>
                     </StyledRowCnt>
                     <div
                         style={{
@@ -66,57 +77,57 @@ function App() {
                                 style={{ backgroundColor: 'orange', width: '40px', height: '40px' }}
                             />
                         </AnimationRegistrar> */}
-                        <AnimationRegistrar animationDuration={5}>
-                            <div style={{ width: '100px', height: '100px', overflow: 'auto' }}>
-                                <div
-                                    style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: '1fr 1fr 1fr',
-                                        gridTemplateRows: '1fr 1fr 1fr',
-                                        backgroundColor: 'green',
-                                        width: '150px',
-                                        height: '150px',
-                                    }}
-                                >
-                                    <AnimationRegistrar
+                        {/* <AnimationRegistrar animationDuration={5}> */}
+                        <div style={{ width: '100px', height: '100px', overflow: 'auto' }}>
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr 1fr',
+                                    gridTemplateRows: '1fr 1fr 1fr',
+                                    backgroundColor: 'green',
+                                    width: '150px',
+                                    height: '150px',
+                                }}
+                            >
+                                {/* <AnimationRegistrar
                                         animationDuration={5}
                                         disablePortal
                                         isInside
-                                    >
-                                        <div
-                                            style={{
-                                                backgroundColor: 'orange',
-                                                width: '50px',
-                                                height: '50px',
-                                                gridRow: '2 / span 1',
-                                                gridColumn: '3 / span 1',
-                                            }}
-                                        />
-                                    </AnimationRegistrar>
-                                    <div
-                                        style={{
-                                            backgroundColor: 'yellow',
-                                            width: '50px',
-                                            height: '50px',
-                                            gridRow: '1 / span 1',
-                                            gridColumn: '2 / span 1',
-                                        }}
-                                    />
-                                </div>
+                                    > */}
+                                <div
+                                    style={{
+                                        backgroundColor: 'orange',
+                                        width: '50px',
+                                        height: '50px',
+                                        gridRow: '2 / span 1',
+                                        gridColumn: '3 / span 1',
+                                    }}
+                                />
+                                {/* </AnimationRegistrar> */}
+                                <div
+                                    style={{
+                                        backgroundColor: 'yellow',
+                                        width: '50px',
+                                        height: '50px',
+                                        gridRow: '1 / span 1',
+                                        gridColumn: '2 / span 1',
+                                    }}
+                                />
                             </div>
-                        </AnimationRegistrar>
+                        </div>
+                        {/* </AnimationRegistrar> */}
                     </StyledRowCnt>
-                    <AnimationRegistrar animationDuration={5} animationDirection='right'>
-                        <AnimationRegistrar animationDuration={5} animationDirection='left'>
-                            <div
-                                style={{
-                                    border: '1px solid grey',
-                                    width: '300px',
-                                    height: '300px',
-                                }}
-                            />
-                        </AnimationRegistrar>
-                    </AnimationRegistrar>
+                    {/* <AnimationRegistrar animationDuration={5} animationDirection='right'> */}
+                    {/* <AnimationRegistrar animationDuration={5} animationDirection='left'> */}
+                    <div
+                        style={{
+                            border: '1px solid grey',
+                            width: '300px',
+                            height: '300px',
+                        }}
+                    />
+                    {/* </AnimationRegistrar>
+                    </AnimationRegistrar> */}
                 </StyledCnt>
             </StyledRowCnt>
         </div>

@@ -1,4 +1,4 @@
-import { ExistedPropsObject } from '../utils/typeUtils';
+import { ExistedPropsObject } from '../utils/types';
 
 export type AnimationDirection = 'left' | 'right';
 

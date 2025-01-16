@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Mouse } from './classMouse';
-import { Point } from '../utils/drawUtils';
+import { Point } from '../utils/draw/drawUtils';
 import { MouseProps, defaultMouseProps } from './mouseUtils';
 
 const NOSE_ANIMATION_TIMES = 2;

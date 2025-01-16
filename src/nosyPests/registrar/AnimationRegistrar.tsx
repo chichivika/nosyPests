@@ -1,8 +1,9 @@
 import React, { useEffect, ReactElement, useImperativeHandle, useRef, RefObject } from 'react';
 import styled from 'styled-components';
-import { pestsRegistrar, UserAnimationSettings } from './registrar';
+import { pestsRegistrar } from './registrar';
+import { UserGeneralAnimationParam } from '../utils/types';
 
-type Props = UserAnimationSettings & {
+type Props = UserGeneralAnimationParam & {
     children: ReactElement;
     disablePortal?: boolean;
     ref?: RefObject<HTMLElement | null>;
@@ -19,21 +20,21 @@ export default function AnimationRegistrar({
     ...animationSettings
 }: Props) {
     const Child = React.Children.only(children);
-    const childRef = useRef<HTMLElement>(null);
-    const renderCntRef = useRef<HTMLDivElement | null>(null);
+    const targetRef = useRef<HTMLElement>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useImperativeHandle(ref, () => {
-        return disablePortal ? renderCntRef.current : childRef.current;
+        return disablePortal ? containerRef.current : targetRef.current;
     }, [disablePortal]);
 
     useEffect(() => {
-        if (childRef.current === null || (disablePortal && renderCntRef.current === null)) {
+        if (targetRef.current === null || (disablePortal && containerRef.current === null)) {
             return;
         }
         const animationKey = pestsRegistrar.registerNodeAnimation({
             ...animationSettings,
-            domEl: childRef.current,
-            renderEl: renderCntRef.current,
+            targetEl: targetRef.current,
+            containerEl: containerRef.current,
         });
 
         return () => {
@@ -42,12 +43,12 @@ export default function AnimationRegistrar({
     });
 
     if (!disablePortal) {
-        return React.cloneElement(Child, { ref: childRef });
+        return React.cloneElement(Child, { ref: targetRef });
     }
 
     return (
-        <StyledWrapper ref={renderCntRef}>
-            {React.cloneElement(Child, { ref: childRef })}
+        <StyledWrapper ref={containerRef}>
+            {React.cloneElement(Child, { ref: targetRef })}
         </StyledWrapper>
     );
 }

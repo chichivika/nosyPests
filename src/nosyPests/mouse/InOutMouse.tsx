@@ -4,6 +4,7 @@ import styled, { keyframes, css } from 'styled-components';
 import SVGMouse from './SVGMouse';
 import { Mouse } from './classMouse';
 import { MouseProps, defaultMouseProps, AnimationCount } from './mouseUtils';
+import { getPxStringIfExists } from '../utils/animation';
 
 type Props = MouseProps & {
     left?: number;
@@ -55,9 +56,6 @@ const StyledFixedMouseCnt = styled.div<{
         bottom: ${getPxStringIfExists(props.$bottom)};
     `,
 );
-export function getPxStringIfExists(number?: number): string | undefined {
-    return typeof number === 'number' ? `${number}px` : undefined;
-}
 const getAnimationRule = ({
     width,
     isTurnedLeft,

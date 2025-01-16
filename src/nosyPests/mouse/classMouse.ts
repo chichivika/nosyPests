@@ -1,4 +1,4 @@
-import { Point, Points, Lines, getLineByPointAndVector } from '../utils/drawUtils';
+import { Point, Points, Lines, getLineByPointAndVector } from '../utils/draw/drawUtils';
 
 type MouseParam = {
     height: number;
