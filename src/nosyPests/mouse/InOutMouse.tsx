@@ -55,7 +55,7 @@ const StyledFixedMouseCnt = styled.div<{
         bottom: ${getPxStringIfExists(props.$bottom)};
     `,
 );
-function getPxStringIfExists(number?: number): string | undefined {
+export function getPxStringIfExists(number?: number): string | undefined {
     return typeof number === 'number' ? `${number}px` : undefined;
 }
 const getAnimationRule = ({

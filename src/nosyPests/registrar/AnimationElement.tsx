@@ -2,7 +2,8 @@ import React, { useReducer, useEffect, useLayoutEffect, useRef, RefObject } from
 import ReactDOM from 'react-dom';
 import { pestsRegistrar, AnimationSettings } from './registrar';
 import { Mouse } from '../mouse/classMouse';
-import InOutMouse from '../mouse/InOutMouse';
+import InOutMouse, { getPxStringIfExists } from '../mouse/InOutMouse';
+import { getAnimationPosition as getNotPortalAnimationPosition } from '../wrapper/MouseWrapper';
 
 type Props = {
     animationPeriodicity?: number;
@@ -11,6 +12,21 @@ type Props = {
 
 type AnimationObject = AnimationSettings & {
     key: string;
+    disablePortal: boolean;
+};
+
+type DomElRect = {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+};
+
+type DomElPosition = {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
 };
 
 export default function AnimationElement({ animationPeriodicity = 10, disabled = false }: Props) {
@@ -25,7 +41,12 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         return null;
     }
 
-    const { animationDirection, height, animationDelay } = animationObject;
+    const { animationDirection, height, animationDelay, key, disablePortal } = animationObject;
+
+    const renderContainer = pestsRegistrar.getRenderElByKey(key);
+    if (renderContainer === null) {
+        return null;
+    }
 
     return ReactDOM.createPortal(
         <InOutMouse
@@ -33,12 +54,12 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
             height={height}
             animationDirection={animationDirection}
             animationDelay={animationDelay}
-            outerPosition='fixed'
+            outerPosition={disablePortal ? 'absolute' : 'fixed'}
             onAnimationEnd={() => {
                 dispatchAnimationObject({ type: 'clear' });
             }}
         />,
-        pestsRegistrar.pestsDomContainer,
+        renderContainer,
     );
 }
 
@@ -49,6 +70,10 @@ function useWindowResize(
 ) {
     useLayoutEffect(() => {
         if (animationKey === null) {
+            return;
+        }
+
+        if (pestsRegistrar.getDisablePortalByKey(animationKey)) {
             return;
         }
 
@@ -63,12 +88,20 @@ function useWindowResize(
             }
 
             const domRect = domEl.getBoundingClientRect();
-            inOutRef.current.style.left = `${getLeftBySettings(
-                domRect.left,
-                domRect.right,
+            const position = getPositionBySettings({
+                domElRect: {
+                    left: domRect.left,
+                    right: domRect.right,
+                    top: domRect.top,
+                    bottom: domRect.bottom,
+                },
                 settings,
-            )}px`;
-            inOutRef.current.style.top = `${getTopBySettings(domRect.bottom, settings)}px`;
+                disablePortal: pestsRegistrar.getDisablePortalByKey(animationKey),
+            });
+            inOutRef.current.style.left = getPxStringIfExists(position.left) || '';
+            inOutRef.current.style.right = getPxStringIfExists(position.right) || '';
+            inOutRef.current.style.top = getPxStringIfExists(position.top) || '';
+            inOutRef.current.style.bottom = getPxStringIfExists(position.bottom) || '';
         }
 
         function addScrollEventListener(node: HTMLElement | null) {
@@ -116,12 +149,20 @@ function useInOutCoordinates(
         }
 
         const domRect = domEl.getBoundingClientRect();
-        inOutRef.current.style.left = `${getLeftBySettings(
-            domRect.left,
-            domRect.right,
+        const position = getPositionBySettings({
+            domElRect: {
+                left: domRect.left,
+                right: domRect.right,
+                top: domRect.top,
+                bottom: domRect.bottom,
+            },
             settings,
-        )}px`;
-        inOutRef.current.style.top = `${getTopBySettings(domRect.bottom, settings)}px`;
+            disablePortal: pestsRegistrar.getDisablePortalByKey(animationKey),
+        });
+        inOutRef.current.style.left = getPxStringIfExists(position.left) || '';
+        inOutRef.current.style.right = getPxStringIfExists(position.right) || '';
+        inOutRef.current.style.top = getPxStringIfExists(position.top) || '';
+        inOutRef.current.style.bottom = getPxStringIfExists(position.bottom) || '';
     }, [animationObject, inOutRef]);
 }
 
@@ -168,6 +209,31 @@ function useAnimationPauseTimer(
             }
         };
     }, [animationPeriodicity, needSetTimer, dispatchAnimationObject]);
+}
+
+function getPositionBySettings({
+    domElRect,
+    settings,
+    disablePortal,
+}: {
+    domElRect: DomElRect;
+    settings: AnimationSettings;
+    disablePortal: boolean;
+}): DomElPosition {
+    const width = Mouse.getWidthByHeight(settings.height);
+    if (disablePortal) {
+        return getNotPortalAnimationPosition({
+            isTurnedLeft: settings.animationDirection === 'left',
+            animationBottom: settings.animationBottom,
+            isInside: settings.isInside,
+            width,
+        });
+    }
+
+    return {
+        top: getTopBySettings(domElRect.bottom, settings),
+        left: getLeftBySettings(domElRect.left, domElRect.right, settings),
+    };
 }
 
 function getTopBySettings(domElBottom: number, settings: AnimationSettings) {

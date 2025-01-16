@@ -41,15 +41,13 @@ export default function MouseWrapper({
     const [doingAnimation, setDoingAnimation] = useDoingAnimation(animationPause, disabled);
     const needShowMouse = !disabled && doingAnimation;
 
-    const position = getHPosition(isTurnedLeft, isInside, width);
+    const position = getAnimationPosition({ isTurnedLeft, isInside, width, animationBottom });
     return (
         <StyledMouseWrapper>
             {children}
             {needShowMouse && (
                 <InOutMouse
-                    left={position.left}
-                    right={position.right}
-                    bottom={animationBottom}
+                    {...position}
                     height={height}
                     animationDirection={animationDirection}
                     onAnimationEnd={() => {
@@ -62,23 +60,32 @@ export default function MouseWrapper({
     );
 }
 
-function getHPosition(
-    isTurnedLeft: boolean,
-    isInside: boolean,
-    width: number,
-): {
+export function getAnimationPosition({
+    isTurnedLeft,
+    isInside,
+    width,
+    animationBottom,
+}: {
+    isTurnedLeft: boolean;
+    isInside: boolean;
+    width: number;
+    animationBottom: number;
+}): {
     left?: number;
     right?: number;
+    bottom?: number;
 } {
     if (!isInside) {
         return {
             left: isTurnedLeft ? -width : undefined,
             right: isTurnedLeft ? undefined : -width,
+            bottom: animationBottom,
         };
     }
     return {
         left: isTurnedLeft ? undefined : 0,
         right: isTurnedLeft ? 0 : undefined,
+        bottom: animationBottom,
     };
 }
 

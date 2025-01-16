@@ -13,9 +13,11 @@ export type AnimationSettings = ExistedPropsObject<UserAnimationSettings>;
 
 export type UserRegisteredObject = UserAnimationSettings & {
     domEl: HTMLElement;
+    renderEl: HTMLDivElement | null;
 };
 export type RegisteredObject = ExistedPropsObject<UserRegisteredObject> & {
     key: string;
+    disablePortal: boolean;
 };
 type RegisteredData = RegisteredObject[];
 
@@ -54,6 +56,7 @@ class Registrar {
             ...Registrar.defaultAnimationValues,
             ...defaultMouseProps,
             ...param,
+            disablePortal: param.renderEl !== null,
             key,
         } as RegisteredObject);
 
@@ -89,6 +92,16 @@ class Registrar {
     public getDomElByKey(key: string): HTMLElement | null {
         const registeredObject = this.registeredData.find((data) => data.key === key);
         return registeredObject?.domEl || null;
+    }
+
+    public getRenderElByKey(key: string): HTMLElement | null {
+        const registeredObject = this.registeredData.find((data) => data.key === key);
+        return registeredObject?.renderEl || this.pestsDomContainer;
+    }
+
+    public getDisablePortalByKey(key: string): boolean {
+        const registeredObject = this.registeredData.find((data) => data.key === key);
+        return registeredObject?.disablePortal || false;
     }
 
     public getAnimationSettingsByKey(animationKey: string): AnimationSettings | null {
