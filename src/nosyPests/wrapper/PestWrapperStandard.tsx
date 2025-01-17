@@ -8,6 +8,7 @@ import { PestWrapperGeneralParam, useDoingAnimation } from './utils';
 
 const StyledPestWrapper = styled.div`
     position: relative;
+    height: max-content;
 `;
 
 export default function PestWrapperStandard({

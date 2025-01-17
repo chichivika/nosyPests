@@ -1,5 +1,5 @@
 const colors = {
-    headerColor: '#9d8f87',
+    headerColor: '#928881',
     headerBgColor: '#faf4ee',
 };
 export default colors;

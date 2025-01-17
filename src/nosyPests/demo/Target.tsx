@@ -18,10 +18,11 @@ type Props = {
     width: number;
     height: number;
     children?: ReactElement | ReactElement[];
+    ref?: React.RefObject<HTMLDivElement>;
 };
-export default function Target({ width, height, children }: Props) {
+export default function Target({ width, height, children, ref }: Props) {
     return (
-        <StyledWrapperTarget $width={width} $height={height}>
+        <StyledWrapperTarget ref={ref} $width={width} $height={height}>
             {children}
         </StyledWrapperTarget>
     );

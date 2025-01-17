@@ -14,24 +14,27 @@ export function useDoingAnimation(animationPause: number, disabled: boolean) {
     const prevDoingAnimation = useRef<boolean>(true);
 
     useEffect(() => {
-        if (!disabled && prevDoingAnimation.current === true && doingAnimation === false) {
+        if (disabled) {
+            return;
+        }
+        if (doingAnimation) {
             prevDoingAnimation.current = doingAnimation;
-            if (animationPause <= 0) {
-                return;
-            }
-            const timerId = setTimeout(() => {
-                setDoingAnimation(true);
-            }, animationPause * 1000);
+            return;
+        }
 
-            return () => {
-                if (timerId) {
-                    clearTimeout(timerId);
-                }
-            };
+        prevDoingAnimation.current = doingAnimation;
+        if (animationPause <= 0) {
+            return;
         }
-        if (doingAnimation !== prevDoingAnimation.current) {
-            prevDoingAnimation.current = doingAnimation;
-        }
+        const timerId = setTimeout(() => {
+            setDoingAnimation(true);
+        }, animationPause * 1000);
+
+        return () => {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+        };
     }, [doingAnimation, animationPause, disabled]);
 
     return [doingAnimation, setDoingAnimation] as [
