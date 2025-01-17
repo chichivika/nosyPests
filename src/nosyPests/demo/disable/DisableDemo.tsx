@@ -33,6 +33,7 @@ export default function DisableDemo() {
             <PestWrapper
                 animationDuration={duration}
                 animationPause={pause}
+                disabled={disabled}
                 animationDirection='right'
                 height={100}
                 animationBottom={0}
