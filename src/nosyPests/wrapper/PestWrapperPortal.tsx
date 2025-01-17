@@ -24,7 +24,8 @@ export default function PestWrapperPortal({
         ...defaultGeneralSettings,
         ...generalAnimationSettings,
     };
-    const { height, animationDirection, isInside, animationBottom } = fullAnimationSettings;
+    const { height, animationDirection, isInside, animationBottom, onAnimationEnd } =
+        fullAnimationSettings;
 
     const [doingAnimation, setDoingAnimation] = useDoingAnimation(animationPause, disabled);
     const [targetRef, movedRef] = usePositionUpdate({
@@ -54,6 +55,7 @@ export default function PestWrapperPortal({
             animationDelay={fullAnimationSettings.animationDelay}
             onAnimationEnd={() => {
                 setDoingAnimation(false);
+                onAnimationEnd?.();
             }}
         />
     );

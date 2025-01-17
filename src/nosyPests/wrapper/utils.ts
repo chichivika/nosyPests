@@ -6,6 +6,7 @@ export type PestWrapperGeneralParam = UserGeneralAnimationParam & {
     animationPause?: number;
     disabled?: boolean;
     ref?: RefObject<HTMLElement | null>;
+    onAnimationEnd?: () => void;
 };
 
 export function useDoingAnimation(animationPause: number, disabled: boolean) {

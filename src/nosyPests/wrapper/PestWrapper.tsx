@@ -8,7 +8,7 @@ type Props = PestWrapperGeneralParam & {
     disablePortal?: boolean;
 };
 
-export default function PestWrapper({ disablePortal = true, ...restProps }: Props) {
+export default function PestWrapper({ disablePortal = false, ...restProps }: Props) {
     return disablePortal ? (
         <PestWrapperStandard {...restProps} />
     ) : (

@@ -52,6 +52,7 @@ function renderEye(mouseObject: Mouse) {
                 r={eyeData.radius}
                 stroke='black'
                 fill='black'
+                key='eye'
             />
             <circle
                 cx={eyeHighLight.centerPoint[0]}
@@ -59,6 +60,7 @@ function renderEye(mouseObject: Mouse) {
                 r={eyeHighLight.radius}
                 stroke='white'
                 fill='white'
+                key='eye highLight'
             />
         </g>
     );
@@ -82,6 +84,7 @@ function renderWhiskers(mouseObject: Mouse, useNoseAnimation: boolean) {
                         stroke='grey'
                         fill='none'
                         strokeOpacity={0.5}
+                        key={`${firstVert[0]}_${firstVert[1]}}`}
                     >
                         {useNoseAnimation && renderWhiskerAnimation(firstVert)}
                     </line>

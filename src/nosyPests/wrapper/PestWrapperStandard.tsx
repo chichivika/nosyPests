@@ -21,7 +21,8 @@ export default function PestWrapperStandard({
         ...defaultGeneralSettings,
         ...generalAnimationSettings,
     };
-    const { height, isInside, animationBottom, animationDirection } = fullAnimationSettings;
+    const { height, isInside, animationBottom, animationDirection, onAnimationEnd } =
+        fullAnimationSettings;
 
     const width = Mouse.getWidthByHeight(height);
     const isTurnedLeft = animationDirection === 'left';
@@ -48,6 +49,7 @@ export default function PestWrapperStandard({
                     animationDelay={fullAnimationSettings.animationDelay}
                     onAnimationEnd={() => {
                         setDoingAnimation(false);
+                        onAnimationEnd?.();
                     }}
                 />
             )}
