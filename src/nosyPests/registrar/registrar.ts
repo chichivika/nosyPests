@@ -1,4 +1,5 @@
 import { ExistedPropsObject, UserGeneralAnimationParam } from '../utils/types';
+import { defaultGeneralSettings } from '../utils/animation';
 
 // ================== types ==============================
 
@@ -29,6 +30,7 @@ class Registrar {
     public registerNodeAnimation(param: UserRegisteredParam): string {
         const key = this.getNextKey();
         this.registeredData.push({
+            ...defaultGeneralSettings,
             ...param,
             key,
             disablePortal: param.containerEl !== null,

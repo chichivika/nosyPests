@@ -16,7 +16,7 @@ const StyledTargetsCnt = styled.div`
     }
 `;
 
-export default function HightDemo() {
+export default function HeightDemo() {
     const title = `animationBottom: number
                 <br />
                 height: number`;

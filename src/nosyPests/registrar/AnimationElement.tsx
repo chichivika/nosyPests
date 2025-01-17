@@ -31,7 +31,7 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         return null;
     }
 
-    const { animationDirection, height, animationDelay, key, disablePortal, containerEl } =
+    const { animationDirection, height, animationDelay, animationDuration, key, containerEl } =
         registeredObject;
 
     const renderContainer =
@@ -41,9 +41,9 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
         <InOutMouse
             ref={movedRef}
             height={height}
+            animationDuration={animationDuration}
             animationDirection={animationDirection}
             animationDelay={animationDelay}
-            outerPosition={disablePortal ? 'absolute' : 'fixed'}
             onAnimationEnd={() => {
                 setAnimationKey(null);
                 pestsRegistrar.setObjectIsNotShowing(key);

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import DirectionDemo from './direction/DirectionDemo';
-import HightDemo from './height/HeightDemo';
+import HeightDemo from './height/HeightDemo';
 import DisableDemo from './disable/DisableDemo';
 import PortalDemo from './portal/PortalDemo';
 
@@ -16,7 +16,7 @@ export default function WrapperDemo() {
     return (
         <StyledWrapperDemo>
             <DirectionDemo />
-            <HightDemo />
+            <HeightDemo />
             <DisableDemo />
             <PortalDemo />
         </StyledWrapperDemo>

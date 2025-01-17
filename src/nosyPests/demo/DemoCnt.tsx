@@ -17,10 +17,11 @@ const StyledTitle2 = styled.h2`
 type Props = {
     title: string;
     children: ReactElement | ReactElement[];
+    className?: string;
 };
-export function DemoCnt({ title, children }: Props) {
+export function DemoCnt({ title, children, className }: Props) {
     return (
-        <div>
+        <div className={className}>
             <StyledTitle2
                 dangerouslySetInnerHTML={{
                     __html: title,
