@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { FormGroup, Checkbox, FormControlLabel } from '@mui/material';
 import PestWrapper from '../../wrapper/PestWrapper';
 import Target from '../Target';
 import { DemoCnt } from '../DemoCnt';
 
-const DURATION = 30;
+const DURATION = 10;
 const PAUSE = 1;
 
 export default function DisableDemo() {
@@ -30,6 +31,26 @@ export default function DisableDemo() {
             >
                 <Target width={150} height={150} />
             </PestWrapper>
+            <FormGroup>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={disabled}
+                            onChange={() => {
+                                setDisabled(!disabled);
+                            }}
+                        />
+                    }
+                    label='disabled'
+                />
+                <FormControlLabel
+                    control={<Checkbox checked={useNoseAnimation} />}
+                    label='useNoseAnimation'
+                    onChange={() => {
+                        setUseNoseAnimation(!useNoseAnimation);
+                    }}
+                />
+            </FormGroup>
         </DemoCnt>
     );
 }
