@@ -6,7 +6,7 @@ const StyledWrapperTarget = styled.div<{ $width: number; $height: number }>`
     height: ${(props) => `${props.$height}px`};
     padding: 0px 10px;
     background-color: ${(props) => props.theme.headerBgColor};
-    border: 2px solid #c1b1a8;
+    border: ${(props) => `2px solid ${props.theme.blockBorderColor}`};
     display: flex;
     flex-direction: column;
     justify-content: center;

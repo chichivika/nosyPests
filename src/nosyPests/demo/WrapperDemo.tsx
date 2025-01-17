@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import DirectionDemo from './direction/DirectionDemo';
 import HightDemo from './height/HeightDemo';
 import DisableDemo from './disable/DisableDemo';
+import PortalDemo from './portal/PortalDemo';
 
 const StyledWrapperDemo = styled.div`
     padding: 0px;
@@ -17,6 +18,7 @@ export default function WrapperDemo() {
             <DirectionDemo />
             <HightDemo />
             <DisableDemo />
+            <PortalDemo />
         </StyledWrapperDemo>
     );
 }
