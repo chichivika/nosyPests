@@ -31,6 +31,7 @@ export default function PestWrapperPortal({
         animationBottom,
         useNoseAnimation,
         onAnimationEnd,
+        colorType,
     } = fullAnimationSettings;
 
     const [doingAnimation, setDoingAnimation] = useDoingAnimation(animationPause, disabled);
@@ -60,6 +61,7 @@ export default function PestWrapperPortal({
             animationDirection={animationDirection}
             animationDuration={fullAnimationSettings.animationDuration}
             animationDelay={fullAnimationSettings.animationDelay}
+            colorType={colorType}
             onAnimationEnd={() => {
                 setDoingAnimation(false);
                 onAnimationEnd?.();

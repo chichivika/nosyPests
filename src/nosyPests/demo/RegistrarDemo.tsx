@@ -6,9 +6,8 @@ import AnimationRegistrar from '../registrar/AnimationRegistrar';
 const StyledGrid = styled.div`
     display: grid;
     grid-template-rows: repeat(2, 80px);
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    width: 80%;
+    grid-template-columns: repeat(6, minmax(100px, 1fr));
+    gap: 15px;
 `;
 const StyledCell = styled.div`
     background-color: ${(props) => props.theme.headerBgColor};

@@ -1,4 +1,5 @@
 import { GeneralAnimationSettings, DomElPosition, DomElRect, AnimationDirection } from './types';
+import { MouseColorType } from '../mouse/mouseUtils';
 
 export const defaultGeneralSettings: GeneralAnimationSettings = {
     animationDirection: 'left',
@@ -8,7 +9,19 @@ export const defaultGeneralSettings: GeneralAnimationSettings = {
     height: 30,
     useNoseAnimation: true,
     isInside: false,
+    colorType: 'gamma',
 };
+
+export function getRandomColorType(): MouseColorType {
+    const index = getRandomIndexFromTo(0, 3);
+    return ['alpha', 'beta', 'gamma'][index] as MouseColorType;
+}
+
+export function getRandomIndexFromTo(start: number, end: number) {
+    const randomRest = Math.random();
+    const randomNumber = randomRest * (end - start) + start;
+    return Math.floor(randomNumber);
+}
 
 export function getPxStringIfExists(number?: number, defaultValue?: string): string | undefined {
     const returnDefaultValue = typeof defaultValue === 'string' ? defaultValue : undefined;

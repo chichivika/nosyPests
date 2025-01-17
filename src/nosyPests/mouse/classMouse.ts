@@ -1,8 +1,18 @@
-import { Point, Points, Lines, getLineByPointAndVector } from '../utils/draw/drawUtils';
+import {
+    Point,
+    Points,
+    Lines,
+    getLineByPointAndVector,
+    getSummPointsWithCoeffs,
+    getDeltaPoints,
+} from '../utils/draw/drawUtils';
+import { MouseEyeType } from './mouseUtils';
 
 type MouseParam = {
     height: number;
     turnedLeft?: boolean;
+    hasNoseSpot?: boolean;
+    eyeType?: MouseEyeType;
 };
 type PathObject =
     | {
@@ -28,8 +38,9 @@ export type PathData = {
     pathSegments: PathObjects;
 };
 
-type CircleData = {
-    radius: number;
+type EllipseData = {
+    radiusX: number;
+    radiusY: number;
     centerPoint: Point;
 };
 
@@ -41,6 +52,10 @@ export class Mouse {
     public step: number;
 
     public turnedLeft: boolean;
+
+    public hasNoseSpot: boolean;
+
+    public eyeType: MouseEyeType;
 
     private coordinates;
 
@@ -80,11 +95,18 @@ export class Mouse {
         return pathString;
     }
 
-    constructor({ height, turnedLeft = true }: MouseParam) {
+    constructor({
+        height,
+        turnedLeft = true,
+        hasNoseSpot = false,
+        eyeType = 'standard',
+    }: MouseParam) {
         this.height = height;
         this.width = Mouse.getWidthByHeight(height);
         this.step = Mouse.getStepByHeight(height);
         this.turnedLeft = turnedLeft;
+        this.hasNoseSpot = hasNoseSpot;
+        this.eyeType = eyeType;
         this.coordinates = this.getKeyCoordinates();
     }
 
@@ -123,6 +145,7 @@ export class Mouse {
             // eye
             eyeCenter: [10 * step, 9 * step] as Point,
             eyeRadius: step as number,
+            eyeNarrowCoeff: 2 / 3,
 
             // nose
             noseCenter: [1.5 * step, 11 * step] as Point,
@@ -190,21 +213,33 @@ export class Mouse {
         };
     }
 
-    public getEyeData(): CircleData {
+    public getEyeData(): EllipseData {
         const { coordinates } = this;
-        const { eyeCenter, eyeRadius } = coordinates;
+        const { eyeCenter, eyeRadius, eyeNarrowCoeff } = coordinates;
+
+        const isStandardEye = this.eyeType === 'standard';
+        const centerY = isStandardEye
+            ? eyeCenter[1]
+            : eyeCenter[1] - eyeRadius * (1 - eyeNarrowCoeff);
         return {
-            radius: eyeRadius,
-            centerPoint: eyeCenter,
+            radiusX: eyeRadius,
+            radiusY: isStandardEye ? eyeRadius : eyeRadius * eyeNarrowCoeff,
+            centerPoint: [eyeCenter[0], centerY],
         };
     }
 
     public getEyeHighLightData() {
         const { coordinates } = this;
-        const { eyeCenter, eyeRadius } = coordinates;
+        const { eyeCenter, eyeRadius, eyeNarrowCoeff } = coordinates;
+
+        const isStandardEye = this.eyeType === 'standard';
+        const radiusY = isStandardEye ? eyeRadius : eyeRadius * eyeNarrowCoeff;
+        const centerY = isStandardEye
+            ? eyeCenter[1]
+            : eyeCenter[1] - eyeRadius * (1 - eyeNarrowCoeff);
         return {
             radius: eyeRadius / 4,
-            centerPoint: [eyeCenter[0] + eyeRadius / 2, eyeCenter[1] - eyeRadius / 2],
+            centerPoint: [eyeCenter[0] + eyeRadius / 2, centerY - radiusY / 2],
         };
     }
 
@@ -267,6 +302,38 @@ export class Mouse {
             radiusX: step,
             radiusY: (Math.sqrt(5) * step) / 2,
             rotateAngle: Math.atan(-1 / 2),
+        };
+    }
+
+    public getNoseSpotData(): PathData | null {
+        const { coordinates, hasNoseSpot } = this;
+
+        if (!hasNoseSpot) {
+            return null;
+        }
+
+        const { headPointA, headPointB, headPointK } = coordinates;
+
+        const startPoint = getSummPointsWithCoeffs(
+            headPointK,
+            getDeltaPoints(headPointK, headPointA),
+            1,
+            0.2,
+        );
+        const endPoint = getSummPointsWithCoeffs(
+            headPointA,
+            getDeltaPoints(headPointA, headPointB),
+            1,
+            0.5,
+        );
+        return {
+            startPoint,
+            pathSegments: [
+                {
+                    type: 'linesChain',
+                    verts: [startPoint, headPointA, endPoint],
+                },
+            ],
         };
     }
 
@@ -339,5 +406,13 @@ export class Mouse {
     public getHeadPathSVG() {
         const headPathData = this.getHeadPathData();
         return Mouse.getPathStringByData(headPathData);
+    }
+
+    public getNoseSpotPathSVG() {
+        const spotPathData = this.getNoseSpotData();
+        if (spotPathData === null) {
+            return null;
+        }
+        return Mouse.getPathStringByData(spotPathData);
     }
 }

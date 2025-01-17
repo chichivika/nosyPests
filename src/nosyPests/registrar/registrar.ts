@@ -1,5 +1,5 @@
 import { ExistedPropsObject, UserGeneralAnimationParam } from '../utils/types';
-import { defaultGeneralSettings } from '../utils/animation';
+import { defaultGeneralSettings, getRandomIndexFromTo } from '../utils/animation';
 
 // ================== types ==============================
 
@@ -52,7 +52,7 @@ class Registrar {
             return null;
         }
 
-        const randomIndex = Registrar.getRandomIndexFromTo(0, notSowingObjects.length);
+        const randomIndex = getRandomIndexFromTo(0, notSowingObjects.length);
         const objectToShow = notSowingObjects[randomIndex];
         this.showingData.push({ key: objectToShow.key });
 
@@ -71,12 +71,6 @@ class Registrar {
     }
 
     // ================== private ===================================
-
-    private static getRandomIndexFromTo(start: number, end: number) {
-        const randomRest = Math.random();
-        const randomNumber = randomRest * (end - start) + start;
-        return Math.floor(randomNumber);
-    }
 
     private getNotShowingObjects() {
         const { registeredData } = this;

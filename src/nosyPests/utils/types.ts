@@ -1,3 +1,5 @@
+import { MouseColorType } from '../mouse/mouseUtils';
+
 export type ExistedPropsObject<ObjectType> = {
     [prop in keyof ObjectType]-?: ObjectType[prop];
 };
@@ -20,5 +22,6 @@ export type UserGeneralAnimationParam = {
     height?: number;
     useNoseAnimation?: boolean;
     isInside?: boolean;
+    colorType?: MouseColorType;
 };
 export type GeneralAnimationSettings = ExistedPropsObject<UserGeneralAnimationParam>;

@@ -15,6 +15,10 @@ export function getSummPointsWithCoeffs(
     ];
 }
 
+export function getDeltaPoints(firstPoint: Point, secondPoint: Point): Point {
+    return [secondPoint[0] - firstPoint[0], secondPoint[1] - firstPoint[1]];
+}
+
 export function getVectorLength(vector: Point) {
     return Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
 }

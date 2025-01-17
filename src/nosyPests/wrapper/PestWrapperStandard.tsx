@@ -29,6 +29,7 @@ export default function PestWrapperStandard({
         animationDirection,
         useNoseAnimation,
         onAnimationEnd,
+        colorType,
     } = fullAnimationSettings;
 
     const width = Mouse.getWidthByHeight(height);
@@ -52,6 +53,7 @@ export default function PestWrapperStandard({
                     {...position}
                     height={height}
                     useNoseAnimation={useNoseAnimation}
+                    colorType={colorType}
                     animationDirection={animationDirection}
                     animationDuration={fullAnimationSettings.animationDuration}
                     animationDelay={fullAnimationSettings.animationDelay}

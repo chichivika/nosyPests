@@ -1,11 +1,13 @@
 import { ReactElement, useEffect, useRef, useState, RefObject } from 'react';
 import { UserGeneralAnimationParam } from '../utils/types';
+import { MouseColorType } from '../mouse/mouseUtils';
 
 export type PestWrapperGeneralParam = UserGeneralAnimationParam & {
     children: ReactElement;
     animationPause?: number;
     disabled?: boolean;
     ref?: RefObject<HTMLElement | null>;
+    colorType?: MouseColorType;
     onAnimationEnd?: () => void;
 };
 

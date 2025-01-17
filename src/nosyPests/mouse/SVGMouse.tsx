@@ -1,7 +1,13 @@
 import React, { useMemo } from 'react';
 import { Mouse } from './classMouse';
 import { Point } from '../utils/draw/drawUtils';
-import { MouseProps, defaultMouseProps } from './mouseUtils';
+import {
+    MouseProps,
+    defaultMouseProps,
+    settingsByMouseType,
+    colorsByMouseType,
+    MouseColorType,
+} from './mouseUtils';
 
 const NOSE_ANIMATION_TIMES = 2;
 const NOSE_ANIMATION_PAUSE_STATE_TIMES = 10;
@@ -9,13 +15,14 @@ const NOSE_ANIMATION_DURATION = '2s';
 const NOSE_ANIMATION_REPEAT_COUNT = 'indefinite';
 
 export default function SVGMouse(props: MouseProps) {
-    const { height, animationDirection, useNoseAnimation, className } = {
+    const { height, animationDirection, useNoseAnimation, className, colorType } = {
         ...defaultMouseProps,
         ...props,
     };
     const mouseObject = useMemo(() => {
-        return new Mouse({ height });
-    }, [height]);
+        const settingsByColorType = settingsByMouseType[colorType];
+        return new Mouse({ height, ...settingsByColorType });
+    }, [height, colorType]);
 
     const width = mouseObject.getWidth();
     const transform = animationDirection === 'left' ? '' : 'scale(-1, 1)';
@@ -27,7 +34,8 @@ export default function SVGMouse(props: MouseProps) {
             style={{ transform }}
             className={`nosy-pests-mouse-svg ${className}`}
         >
-            {renderHead(mouseObject)}
+            {renderHead(mouseObject, colorType)}
+            {renderNoseSpot(mouseObject, colorType)}
             {renderEye(mouseObject)}
             {renderEar(mouseObject)}
             {renderWhiskers(mouseObject, useNoseAnimation)}
@@ -36,9 +44,22 @@ export default function SVGMouse(props: MouseProps) {
     );
 }
 
-function renderHead(mouseObject: Mouse) {
+function renderHead(mouseObject: Mouse, colorType: MouseColorType) {
     const headPath = mouseObject.getHeadPathSVG();
-    return <path d={headPath} fill='lightGrey' stroke='grey' />;
+    const colors = colorsByMouseType[colorType];
+
+    return <path d={headPath} fill={colors.bodyFillColor} stroke={colors.bodyStrokeColor} />;
+}
+
+function renderNoseSpot(mouseObject: Mouse, colorType: MouseColorType) {
+    const spotPath = mouseObject.getNoseSpotPathSVG();
+    if (spotPath === null) {
+        return null;
+    }
+    const colors = colorsByMouseType[colorType];
+    return (
+        <path d={spotPath} fill={colors.noseSpotFillColor} stroke={colors.noseSpotStrokeColor} />
+    );
 }
 
 function renderEye(mouseObject: Mouse) {
@@ -46,10 +67,11 @@ function renderEye(mouseObject: Mouse) {
     const eyeHighLight = mouseObject.getEyeHighLightData();
     return (
         <g>
-            <circle
+            <ellipse
                 cx={eyeData.centerPoint[0]}
                 cy={eyeData.centerPoint[1]}
-                r={eyeData.radius}
+                rx={eyeData.radiusX}
+                ry={eyeData.radiusY}
                 stroke='black'
                 fill='black'
                 key='eye'

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PestWrapper from '../../wrapper/PestWrapper';
-import HeightTarget from './HeightTarget';
+import ColorTypeTarget from './ColorTypeTarget';
 import { DemoCnt } from '../DemoCnt';
 
 const DURATION = 5;
@@ -16,67 +16,60 @@ const StyledTargetsCnt = styled.div`
     }
 `;
 
-export default function HeightDemo() {
-    const title = `animationBottom: number
-                <br />
-                height: number`;
+export default function ColorTypeDemo() {
+    const title = 'colorType: &quot;alpha&quot; | &quot;beta&quot; | &quot;gamma&quot;';
+
     return (
         <DemoCnt title={title}>
             <PestWrapper
                 animationDuration={DURATION}
                 animationPause={PAUSE}
-                height={20}
+                height={80}
                 animationBottom={160}
+                colorType='alpha'
             >
                 <PestWrapper
                     animationDuration={DURATION}
                     animationPause={PAUSE}
-                    height={50}
-                    animationBottom={95}
+                    height={80}
+                    animationBottom={80}
+                    colorType='beta'
                 >
                     <PestWrapper
                         animationDuration={DURATION}
                         animationPause={PAUSE}
                         height={80}
                         animationBottom={0}
+                        colorType='gamma'
                     >
                         <PestWrapper
                             animationDuration={DURATION}
                             animationPause={PAUSE}
-                            animationDirection='right'
-                            height={20}
+                            height={80}
                             animationBottom={160}
+                            animationDirection='right'
+                            colorType='alpha'
                         >
                             <PestWrapper
                                 animationDuration={DURATION}
                                 animationPause={PAUSE}
+                                height={80}
+                                animationBottom={80}
                                 animationDirection='right'
-                                height={50}
-                                animationBottom={95}
+                                colorType='beta'
                             >
                                 <PestWrapper
                                     animationDuration={DURATION}
                                     animationPause={PAUSE}
-                                    animationDirection='right'
                                     height={80}
                                     animationBottom={0}
+                                    animationDirection='right'
+                                    colorType='gamma'
                                 >
                                     <StyledTargetsCnt>
-                                        <HeightTarget
-                                            animationBottom={160}
-                                            height={20}
-                                            targetHeight={80}
-                                        />
-                                        <HeightTarget
-                                            animationBottom={95}
-                                            height={50}
-                                            targetHeight={80}
-                                        />
-                                        <HeightTarget
-                                            animationBottom={0}
-                                            height={80}
-                                            targetHeight={80}
-                                        />
+                                        <ColorTypeTarget targetHeight={80} colorType='alpha' />
+                                        <ColorTypeTarget targetHeight={80} colorType='beta' />
+                                        <ColorTypeTarget targetHeight={80} colorType='gamma' />
                                     </StyledTargetsCnt>
                                 </PestWrapper>
                             </PestWrapper>

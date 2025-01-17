@@ -9,6 +9,7 @@ import {
     updateMovedElByTarget,
 } from '../utils/useAnimation';
 import animationPortal from '../utils/portal';
+import { getRandomColorType } from '../utils/animation';
 
 type Props = {
     animationPeriodicity?: number;
@@ -44,6 +45,7 @@ export default function AnimationElement({ animationPeriodicity = 10, disabled =
             animationDuration={animationDuration}
             animationDirection={animationDirection}
             animationDelay={animationDelay}
+            colorType={getRandomColorType()}
             onAnimationEnd={() => {
                 setAnimationKey(null);
                 pestsRegistrar.setObjectIsNotShowing(key);
