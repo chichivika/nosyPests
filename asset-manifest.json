@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/nosyPests/static/css/main.8e681039.css",
-    "main.js": "/nosyPests/static/js/main.f709ed3f.js",
+    "main.js": "/nosyPests/static/js/main.b12db6b6.js",
     "static/media/Roboto-Regular.ttf": "/nosyPests/static/media/Roboto-Regular.27f62b53b93858475a7f.ttf",
     "index.html": "/nosyPests/index.html",
     "main.8e681039.css.map": "/nosyPests/static/css/main.8e681039.css.map",
-    "main.f709ed3f.js.map": "/nosyPests/static/js/main.f709ed3f.js.map"
+    "main.b12db6b6.js.map": "/nosyPests/static/js/main.b12db6b6.js.map"
   },
   "entrypoints": [
     "static/css/main.8e681039.css",
-    "static/js/main.f709ed3f.js"
+    "static/js/main.b12db6b6.js"
   ]
 }
