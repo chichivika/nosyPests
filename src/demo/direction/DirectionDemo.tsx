@@ -1,5 +1,5 @@
 import React from 'react';
-import PestWrapper from '../../wrapper/PestWrapper';
+import PestWrapper from '../../nosyPests/wrapper/PestWrapper';
 import DirectionTarget from './DirectionTarget';
 import { DemoCnt } from '../DemoCnt';
 

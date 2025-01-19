@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimationDirection } from '../../utils/types';
+import { AnimationDirection } from '../../nosyPests/utils/types';
 import Target from '../Target';
 
 type Props = {

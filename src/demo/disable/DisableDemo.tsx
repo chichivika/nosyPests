@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormGroup, FormControlLabel } from '@mui/material';
 import Checkbox from '../base/Checkbox';
-import PestWrapper from '../../wrapper/PestWrapper';
+import PestWrapper from '../../nosyPests/wrapper/PestWrapper';
 import Target from '../Target';
 import { DemoCnt } from '../DemoCnt';
 import PlusMinus from '../base/PlusMinus';

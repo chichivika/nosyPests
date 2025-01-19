@@ -3,9 +3,9 @@ import styled, { ThemeProvider } from 'styled-components';
 import TreeContainer from './pestsTree/TreeContainer';
 import Header from './Header';
 import colors from './style/colors';
-import WrapperDemo from './nosyPests/demo/WrapperDemo';
+import WrapperDemo from './demo/WrapperDemo';
 import AnimationElement from './nosyPests/registrar/AnimationElement';
-import RegistrarDemo from './nosyPests/demo/RegistrarDemo';
+import RegistrarDemo from './demo/RegistrarDemo';
 
 const StyledApp = styled.div`
     font-family: Roboto, sans-serif;

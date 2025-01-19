@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import PestWrapper from '../../wrapper/PestWrapper';
+import PestWrapper from '../../nosyPests/wrapper/PestWrapper';
 import HeightTarget from './HeightTarget';
 import { DemoCnt } from '../DemoCnt';
 

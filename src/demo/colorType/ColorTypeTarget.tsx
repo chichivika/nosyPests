@@ -1,6 +1,6 @@
 import React from 'react';
 import Target from '../Target';
-import { MouseColorType } from '../../mouse/mouseUtils';
+import { MouseColorType } from '../../nosyPests/mouse/mouseUtils';
 
 type Props = {
     colorType: MouseColorType;
