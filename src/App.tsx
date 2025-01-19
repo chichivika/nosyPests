@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import TreeContainer from './pestsTree/TreeContainer';
 import Header from './Header';
 import colors from './style/colors';
 import WrapperDemo from './demo/WrapperDemo';
@@ -17,7 +16,6 @@ function App() {
         <ThemeProvider theme={colors}>
             <StyledApp className='app'>
                 <Header />
-                <TreeContainer />
                 <RegistrarDemo />
                 <WrapperDemo />
                 <AnimationElement animationPeriodicity={1} />
